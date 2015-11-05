@@ -67,7 +67,11 @@ namespace SerialPortListener.Serial
         {
             int dataLength = _serialPort.BytesToRead;
             byte[] data = new byte[dataLength];
+
+           
+
             int nbrDataRead = _serialPort.Read(data, 0, dataLength);
+           
             if (nbrDataRead == 0)
                 return;
             
@@ -89,13 +93,15 @@ namespace SerialPortListener.Serial
             if (_serialPort != null && _serialPort.IsOpen)
                     _serialPort.Close();
 
-            // Setting serial port settings // set to 9600 for ease
+            // Setting serial port settings // set to 9600 for ease of testing
             _serialPort = new SerialPort(
                 _currentSerialSettings.PortName,
                 9600,
                 _currentSerialSettings.Parity,
                 _currentSerialSettings.DataBits,
                 _currentSerialSettings.StopBits);
+
+            
 
             // Subscribe to event and open serial port for data
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(_serialPort_DataReceived);

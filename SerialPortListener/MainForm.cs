@@ -90,7 +90,7 @@ namespace SerialPortListener
                 for (int i = 0; i < e.Data.Length; i++)
                     sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
-            badData.Text = sb.ToString();
+            badData.AppendText (sb.ToString());
             
             response =  CheckResponse(e.Data);
 
@@ -104,8 +104,10 @@ namespace SerialPortListener
 
                 rxResponse = CheckResponse(GetBytes(rxData.ToString()));
 
+
                 badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
-                
+                badData.AppendText("Repeat: " + repeatCount.ToString() + "\n");
+
                 rxData.Append(sb);
                 
 
@@ -118,17 +120,7 @@ namespace SerialPortListener
 
         private void decodeModbus(StringBuilder sb)
         {
-            if (sb != null && previousMessage != null)
-            { 
-                if (sb.ToString() == previousMessage.ToString())
-                {
-                    repeatCount++;
-                }
-                else
-                {
-                    repeatCount = 0;
-                }
-        }
+           
          
             int startAddressHigh=0;
             int startAddressLow=0;
@@ -152,7 +144,7 @@ namespace SerialPortListener
                     {
 
                         case 0:
-                            if (previousSlaveId == words[i] )
+                            if ((previousSlaveId == words[i]) && (repeatCount ==0 ))
                             {
                                 RX = true;
                                 
