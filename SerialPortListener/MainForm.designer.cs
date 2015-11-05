@@ -30,152 +30,33 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label baudRateLabel;
-            System.Windows.Forms.Label dataBitsLabel;
-            System.Windows.Forms.Label parityLabel;
-            System.Windows.Forms.Label portNameLabel;
             System.Windows.Forms.Label stopBitsLabel;
-            this.baudRateComboBox = new System.Windows.Forms.ComboBox();
-            this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
-            this.parityComboBox = new System.Windows.Forms.ComboBox();
-            this.portNameComboBox = new System.Windows.Forms.ComboBox();
-            this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            System.Windows.Forms.Label dataBitsLabel;
+            System.Windows.Forms.Label portNameLabel;
+            System.Windows.Forms.Label parityLabel;
             this.btnStart = new System.Windows.Forms.Button();
             this.tbData = new System.Windows.Forms.TextBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.tbDataRx = new System.Windows.Forms.TextBox();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.badData = new System.Windows.Forms.TextBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPageSerial = new System.Windows.Forms.TabPage();
+            this.tabPageOptions = new System.Windows.Forms.TabPage();
+            this.baudRateComboBox = new System.Windows.Forms.ComboBox();
+            this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
+            this.portNameComboBox = new System.Windows.Forms.ComboBox();
+            this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
+            this.parityComboBox = new System.Windows.Forms.ComboBox();
             baudRateLabel = new System.Windows.Forms.Label();
-            dataBitsLabel = new System.Windows.Forms.Label();
-            parityLabel = new System.Windows.Forms.Label();
-            portNameLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            dataBitsLabel = new System.Windows.Forms.Label();
+            portNameLabel = new System.Windows.Forms.Label();
+            parityLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPageSerial.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // baudRateLabel
-            // 
-            baudRateLabel.AutoSize = true;
-            baudRateLabel.Location = new System.Drawing.Point(13, 73);
-            baudRateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            baudRateLabel.Name = "baudRateLabel";
-            baudRateLabel.Size = new System.Drawing.Size(79, 17);
-            baudRateLabel.TabIndex = 1;
-            baudRateLabel.Text = "Baud Rate:";
-            // 
-            // dataBitsLabel
-            // 
-            dataBitsLabel.AutoSize = true;
-            dataBitsLabel.Location = new System.Drawing.Point(13, 106);
-            dataBitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            dataBitsLabel.Name = "dataBitsLabel";
-            dataBitsLabel.Size = new System.Drawing.Size(69, 17);
-            dataBitsLabel.TabIndex = 3;
-            dataBitsLabel.Text = "Data Bits:";
-            // 
-            // parityLabel
-            // 
-            parityLabel.AutoSize = true;
-            parityLabel.Location = new System.Drawing.Point(13, 139);
-            parityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            parityLabel.Name = "parityLabel";
-            parityLabel.Size = new System.Drawing.Size(48, 17);
-            parityLabel.TabIndex = 5;
-            parityLabel.Text = "Parity:";
-            // 
-            // portNameLabel
-            // 
-            portNameLabel.AutoSize = true;
-            portNameLabel.Location = new System.Drawing.Point(13, 39);
-            portNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            portNameLabel.Name = "portNameLabel";
-            portNameLabel.Size = new System.Drawing.Size(79, 17);
-            portNameLabel.TabIndex = 7;
-            portNameLabel.Text = "Port Name:";
-            // 
-            // stopBitsLabel
-            // 
-            stopBitsLabel.AutoSize = true;
-            stopBitsLabel.Location = new System.Drawing.Point(13, 172);
-            stopBitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            stopBitsLabel.Name = "stopBitsLabel";
-            stopBitsLabel.Size = new System.Drawing.Size(68, 17);
-            stopBitsLabel.TabIndex = 9;
-            stopBitsLabel.Text = "Stop Bits:";
-            // 
-            // baudRateComboBox
-            // 
-            this.baudRateComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "BaudRate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.baudRateComboBox.FormattingEnabled = true;
-            this.baudRateComboBox.Location = new System.Drawing.Point(103, 69);
-            this.baudRateComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.baudRateComboBox.Name = "baudRateComboBox";
-            this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
-            this.baudRateComboBox.TabIndex = 2;
-            // 
-            // dataBitsComboBox
-            // 
-            this.dataBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "DataBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.dataBitsComboBox.FormattingEnabled = true;
-            this.dataBitsComboBox.Location = new System.Drawing.Point(103, 102);
-            this.dataBitsComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.dataBitsComboBox.Name = "dataBitsComboBox";
-            this.dataBitsComboBox.Size = new System.Drawing.Size(160, 24);
-            this.dataBitsComboBox.TabIndex = 4;
-            // 
-            // parityComboBox
-            // 
-            this.parityComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "Parity", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.parityComboBox.FormattingEnabled = true;
-            this.parityComboBox.Location = new System.Drawing.Point(103, 135);
-            this.parityComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.parityComboBox.Name = "parityComboBox";
-            this.parityComboBox.Size = new System.Drawing.Size(160, 24);
-            this.parityComboBox.TabIndex = 6;
-            // 
-            // portNameComboBox
-            // 
-            this.portNameComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "PortName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.portNameComboBox.FormattingEnabled = true;
-            this.portNameComboBox.Location = new System.Drawing.Point(103, 36);
-            this.portNameComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.portNameComboBox.Name = "portNameComboBox";
-            this.portNameComboBox.Size = new System.Drawing.Size(160, 24);
-            this.portNameComboBox.TabIndex = 8;
-            this.portNameComboBox.SelectedIndexChanged += new System.EventHandler(this.portNameComboBox_SelectedIndexChanged);
-            // 
-            // stopBitsComboBox
-            // 
-            this.stopBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "StopBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.stopBitsComboBox.FormattingEnabled = true;
-            this.stopBitsComboBox.Location = new System.Drawing.Point(103, 169);
-            this.stopBitsComboBox.Margin = new System.Windows.Forms.Padding(4);
-            this.stopBitsComboBox.Name = "stopBitsComboBox";
-            this.stopBitsComboBox.Size = new System.Drawing.Size(160, 24);
-            this.stopBitsComboBox.TabIndex = 10;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.baudRateComboBox);
-            this.groupBox1.Controls.Add(baudRateLabel);
-            this.groupBox1.Controls.Add(this.stopBitsComboBox);
-            this.groupBox1.Controls.Add(stopBitsLabel);
-            this.groupBox1.Controls.Add(dataBitsLabel);
-            this.groupBox1.Controls.Add(this.portNameComboBox);
-            this.groupBox1.Controls.Add(this.dataBitsComboBox);
-            this.groupBox1.Controls.Add(portNameLabel);
-            this.groupBox1.Controls.Add(parityLabel);
-            this.groupBox1.Controls.Add(this.parityComboBox);
-            this.groupBox1.Location = new System.Drawing.Point(13, 13);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(289, 210);
-            this.groupBox1.TabIndex = 11;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Serial Port Settings";
             // 
             // btnStart
             // 
@@ -225,10 +106,6 @@
             this.tbDataRx.Size = new System.Drawing.Size(444, 272);
             this.tbDataRx.TabIndex = 14;
             // 
-            // serialSettingsBindingSource
-            // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
-            // 
             // badData
             // 
             this.badData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -242,23 +119,168 @@
             this.badData.Size = new System.Drawing.Size(617, 210);
             this.badData.TabIndex = 15;
             // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPageSerial);
+            this.tabControl1.Controls.Add(this.tabPageOptions);
+            this.tabControl1.Location = new System.Drawing.Point(12, 13);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(291, 210);
+            this.tabControl1.TabIndex = 16;
+            // 
+            // tabPageSerial
+            // 
+            this.tabPageSerial.Controls.Add(this.baudRateComboBox);
+            this.tabPageSerial.Controls.Add(baudRateLabel);
+            this.tabPageSerial.Controls.Add(this.stopBitsComboBox);
+            this.tabPageSerial.Controls.Add(stopBitsLabel);
+            this.tabPageSerial.Controls.Add(dataBitsLabel);
+            this.tabPageSerial.Controls.Add(this.portNameComboBox);
+            this.tabPageSerial.Controls.Add(this.dataBitsComboBox);
+            this.tabPageSerial.Controls.Add(portNameLabel);
+            this.tabPageSerial.Controls.Add(parityLabel);
+            this.tabPageSerial.Controls.Add(this.parityComboBox);
+            this.tabPageSerial.Location = new System.Drawing.Point(4, 25);
+            this.tabPageSerial.Name = "tabPageSerial";
+            this.tabPageSerial.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSerial.Size = new System.Drawing.Size(283, 181);
+            this.tabPageSerial.TabIndex = 0;
+            this.tabPageSerial.Text = "Serial Settings";
+            this.tabPageSerial.UseVisualStyleBackColor = true;
+            // 
+            // tabPageOptions
+            // 
+            this.tabPageOptions.Location = new System.Drawing.Point(4, 25);
+            this.tabPageOptions.Name = "tabPageOptions";
+            this.tabPageOptions.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageOptions.Size = new System.Drawing.Size(283, 181);
+            this.tabPageOptions.TabIndex = 1;
+            this.tabPageOptions.Text = "Options";
+            this.tabPageOptions.UseVisualStyleBackColor = true;
+            // 
+            // baudRateComboBox
+            // 
+            this.baudRateComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "BaudRate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.baudRateComboBox.FormattingEnabled = true;
+            this.baudRateComboBox.Location = new System.Drawing.Point(104, 42);
+            this.baudRateComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.baudRateComboBox.Name = "baudRateComboBox";
+            this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
+            this.baudRateComboBox.TabIndex = 12;
+            // 
+            // baudRateLabel
+            // 
+            baudRateLabel.AutoSize = true;
+            baudRateLabel.Location = new System.Drawing.Point(14, 46);
+            baudRateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            baudRateLabel.Name = "baudRateLabel";
+            baudRateLabel.Size = new System.Drawing.Size(79, 17);
+            baudRateLabel.TabIndex = 11;
+            baudRateLabel.Text = "Baud Rate:";
+            // 
+            // stopBitsComboBox
+            // 
+            this.stopBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "StopBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.stopBitsComboBox.FormattingEnabled = true;
+            this.stopBitsComboBox.Location = new System.Drawing.Point(104, 142);
+            this.stopBitsComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.stopBitsComboBox.Name = "stopBitsComboBox";
+            this.stopBitsComboBox.Size = new System.Drawing.Size(160, 24);
+            this.stopBitsComboBox.TabIndex = 20;
+            // 
+            // stopBitsLabel
+            // 
+            stopBitsLabel.AutoSize = true;
+            stopBitsLabel.Location = new System.Drawing.Point(14, 145);
+            stopBitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            stopBitsLabel.Name = "stopBitsLabel";
+            stopBitsLabel.Size = new System.Drawing.Size(68, 17);
+            stopBitsLabel.TabIndex = 19;
+            stopBitsLabel.Text = "Stop Bits:";
+            // 
+            // dataBitsLabel
+            // 
+            dataBitsLabel.AutoSize = true;
+            dataBitsLabel.Location = new System.Drawing.Point(14, 79);
+            dataBitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            dataBitsLabel.Name = "dataBitsLabel";
+            dataBitsLabel.Size = new System.Drawing.Size(69, 17);
+            dataBitsLabel.TabIndex = 13;
+            dataBitsLabel.Text = "Data Bits:";
+            // 
+            // portNameComboBox
+            // 
+            this.portNameComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "PortName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.portNameComboBox.FormattingEnabled = true;
+            this.portNameComboBox.Location = new System.Drawing.Point(104, 9);
+            this.portNameComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.portNameComboBox.Name = "portNameComboBox";
+            this.portNameComboBox.Size = new System.Drawing.Size(160, 24);
+            this.portNameComboBox.TabIndex = 18;
+            // 
+            // dataBitsComboBox
+            // 
+            this.dataBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "DataBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.dataBitsComboBox.FormattingEnabled = true;
+            this.dataBitsComboBox.Location = new System.Drawing.Point(104, 75);
+            this.dataBitsComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.dataBitsComboBox.Name = "dataBitsComboBox";
+            this.dataBitsComboBox.Size = new System.Drawing.Size(160, 24);
+            this.dataBitsComboBox.TabIndex = 14;
+            // 
+            // portNameLabel
+            // 
+            portNameLabel.AutoSize = true;
+            portNameLabel.Location = new System.Drawing.Point(14, 12);
+            portNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            portNameLabel.Name = "portNameLabel";
+            portNameLabel.Size = new System.Drawing.Size(79, 17);
+            portNameLabel.TabIndex = 17;
+            portNameLabel.Text = "Port Name:";
+            // 
+            // parityLabel
+            // 
+            parityLabel.AutoSize = true;
+            parityLabel.Location = new System.Drawing.Point(14, 112);
+            parityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            parityLabel.Name = "parityLabel";
+            parityLabel.Size = new System.Drawing.Size(48, 17);
+            parityLabel.TabIndex = 15;
+            parityLabel.Text = "Parity:";
+            // 
+            // parityComboBox
+            // 
+            this.parityComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "Parity", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.parityComboBox.FormattingEnabled = true;
+            this.parityComboBox.Location = new System.Drawing.Point(104, 108);
+            this.parityComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.parityComboBox.Name = "parityComboBox";
+            this.parityComboBox.Size = new System.Drawing.Size(160, 24);
+            this.parityComboBox.TabIndex = 16;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(949, 570);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.badData);
             this.Controls.Add(this.tbDataRx);
             this.Controls.Add(this.tbData);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnStart);
-            this.Controls.Add(this.groupBox1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Modbus Mon";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPageSerial.ResumeLayout(false);
+            this.tabPageSerial.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -267,17 +289,19 @@
         #endregion
 
         private System.Windows.Forms.BindingSource serialSettingsBindingSource;
-        private System.Windows.Forms.ComboBox baudRateComboBox;
-        private System.Windows.Forms.ComboBox dataBitsComboBox;
-        private System.Windows.Forms.ComboBox parityComboBox;
-        private System.Windows.Forms.ComboBox portNameComboBox;
-        private System.Windows.Forms.ComboBox stopBitsComboBox;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.TextBox tbData;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.TextBox tbDataRx;
         private System.Windows.Forms.TextBox badData;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPageSerial;
+        private System.Windows.Forms.ComboBox baudRateComboBox;
+        private System.Windows.Forms.ComboBox stopBitsComboBox;
+        private System.Windows.Forms.ComboBox portNameComboBox;
+        private System.Windows.Forms.ComboBox dataBitsComboBox;
+        private System.Windows.Forms.ComboBox parityComboBox;
+        private System.Windows.Forms.TabPage tabPageOptions;
     }
 }
 
