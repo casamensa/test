@@ -31,7 +31,7 @@ namespace SerialPortListener
         int rxCRC2 = 0;
 
         bool response;
-        bool rxResponse;
+        //bool rxResponse;
         bool RX = false;
         
         public MainForm()
@@ -62,7 +62,7 @@ namespace SerialPortListener
             _spManager.NewSerialDataRecieved += new EventHandler<SerialDataEventArgs>(_spManager_NewSerialDataRecieved);
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
 
-            baudRateComboBox.SelectedIndex = 11;
+            baudRateComboBox.SelectedIndex = 11; // doesnt work for some reason
         }
 
         
@@ -101,13 +101,6 @@ namespace SerialPortListener
             else // CRC check has failed then do this
             {
                 badData.AppendText("Error Detected \n");
-
-                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
-
-
-                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
-                badData.AppendText("Repeat: " + repeatCount.ToString() + "\n");
-
                 rxData.Append(sb);
                 
 
@@ -317,11 +310,7 @@ namespace SerialPortListener
                 tbDataRx.AppendText("\n");
                 tbDataRx.ScrollToCaret();
                 previousMessage = sb;
-
-                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
-
-                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
-
+            
                 
 
             
