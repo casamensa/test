@@ -132,7 +132,7 @@ namespace SerialPortListener
                     {
 
                         case 0:
-                            if (previousSlaveId == words[i] && sb != previousMessage)
+                            if (previousSlaveId == words[i]) //&& sb != previousMessage)
                             {
                                 RX = true;
                                 tbDataRx.AppendText("RX \n");
@@ -176,7 +176,7 @@ namespace SerialPortListener
                             }
                             if (RX)
                             {
-                                tbDataRx.AppendText("Start Address High: ");
+                                tbDataRx.AppendText("Data High: ");
                                 tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
                             }
                             else
@@ -191,7 +191,7 @@ namespace SerialPortListener
                             startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
                             if (RX)
                             {
-                                tbDataRx.AppendText("Start Addess Low: ");
+                                tbDataRx.AppendText("Data Low: ");
                                 tbDataRx.AppendText(startAddressLow.ToString() + "\n");
                             }
                             else
@@ -213,7 +213,7 @@ namespace SerialPortListener
                             }
                             if (RX)
                             {
-                                tbDataRx.AppendText("Number High: ");
+                                tbDataRx.AppendText("Data High: ");
                                 tbDataRx.AppendText(numberHigh.ToString() + "\n");
                             }
                             else
@@ -235,7 +235,7 @@ namespace SerialPortListener
                             }
                             if (RX)
                             {
-                                tbDataRx.AppendText("Number Low: ");
+                                tbDataRx.AppendText("Data Low: ");
                                 tbDataRx.AppendText(numberLow.ToString() + "\n");
 
 
@@ -243,8 +243,8 @@ namespace SerialPortListener
                                 range = (numberHigh * 256) + (numberLow);
                                 endAddress = startAddress + range;
 
-                                tbDataRx.AppendText("\n Start of Data : " + startAddress + "\n");
-                                tbDataRx.AppendText("\n End of Data : " + endAddress + "\n");
+                                //tbDataRx.AppendText("\n Start of Data : " + startAddress + "\n");
+                               // tbDataRx.AppendText("\n End of Data : " + endAddress + "\n");
                             }
                             else
                             {
@@ -289,11 +289,7 @@ namespace SerialPortListener
 
                     }
 
-
-
-                
-
-                }
+                 }
 
                 tbData.AppendText("\n");
                 tbData.ScrollToCaret();
@@ -318,6 +314,10 @@ namespace SerialPortListener
             else // CRC check has failed then do this
             {
                 badData.AppendText("Error Detected \n");
+
+                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
+
+                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
                 // badData.AppendText(sb.ToString()+"\n");
                 rxData.Append(sb);
                 //badData.AppendText("Add: " + rxData+"\n");
