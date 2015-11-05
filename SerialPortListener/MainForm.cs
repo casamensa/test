@@ -16,7 +16,7 @@ namespace SerialPortListener
         SerialPortManager _spManager;
 
         string returnCode;
-        string previousSlaveId = " ";
+        string previousSlaveId = "999";
         string str;
 
         byte[] rxByte = new byte[1000];
@@ -27,6 +27,9 @@ namespace SerialPortListener
         StringBuilder rxByteView = new StringBuilder();
 
         int repeatCount = 0;
+        int rxCRC1 = 0;
+        int rxCRC2 = 0;
+
         bool response;
         bool rxResponse;
         bool RX = false;
@@ -87,14 +90,29 @@ namespace SerialPortListener
                 for (int i = 0; i < e.Data.Length; i++)
                     sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
+            badData.Text = sb.ToString();
             
             response =  CheckResponse(e.Data);
-            
 
-            decodeModbus(sb);
-          
+            if (response)
+            {
+                decodeModbus(sb);
+            }
+            else // CRC check has failed then do this
+            {
+                badData.AppendText("Error Detected \n");
 
-           
+                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
+
+                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
+                
+                rxData.Append(sb);
+                
+
+            }
+
+
+
 
         }
 
@@ -121,9 +139,11 @@ namespace SerialPortListener
             int endAddress = 0; 
           
             string[] words = sb.ToString().Split(' ');
-            if (response || rxResponse) // If the CRC checkes for TX or RX pass then enter here
-            {
-                tbDataRx.AppendText(rxData.ToString());
+            
+                //tbDataRx.AppendText(rxData.ToString());
+
+                rxCRC1 = words.Length - 3;
+                rxCRC2 = words.Length - 2;
       
                 for (int i = 0; i < words.Length; i++)
                 {
@@ -132,21 +152,24 @@ namespace SerialPortListener
                     {
 
                         case 0:
-                            if (previousSlaveId == words[i]) //&& sb != previousMessage)
+                            if (previousSlaveId == words[i] )
                             {
                                 RX = true;
-                                tbDataRx.AppendText("RX \n");
-                                tbDataRx.AppendText("Slave Address:" + previousSlaveId + "\n");
+                                
+                                tbDataRx.Text = ("Slave Response \n");
+                                int value = Convert.ToInt32(previousSlaveId, 16);
+                                tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
                                 tbDataRx.AppendText("Calculated CRC: " + response + "\n");
                                 previousSlaveId = " ";
                             }
                             else
                             {
                                 RX = false;
-                                tbData.AppendText("TX \n");
+                                tbData.Text = ("Master Request \n");
                                 previousSlaveId = words[i];
                                 tbData.AppendText("Slave Address: ");
-                                tbData.AppendText(words[i] + "\n");
+                                int value = Convert.ToInt32(words[i], 16);
+                                tbData.AppendText(value.ToString() + "\n");
                                 tbData.AppendText("Calculated CRC: " + response + "\n");
                             }
 
@@ -261,35 +284,40 @@ namespace SerialPortListener
                             }
                             break;
 
-                        case 6:
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("CRC: ");
-                                tbDataRx.AppendText(words[i] + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("CRC: ");
-                                tbData.AppendText(words[i] + "\n");
-                            }
-                            break;
-
-                        case 7:
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("CRC: ");
-                                tbDataRx.AppendText(words[i] + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("CRC: ");
-                                tbData.AppendText(words[i] + "\n");
-                            }
-                            break;
 
                     }
 
-                 }
+                    if (i == rxCRC1)
+                    {
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("CRC: ");
+                            tbDataRx.AppendText(words[i] + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("CRC: ");
+                            tbData.AppendText(words[i] + "\n");
+                        }
+                    }
+
+                    if (i == rxCRC2)
+                    {
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("CRC: ");
+                            tbDataRx.AppendText(words[i] + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("CRC: ");
+                            tbData.AppendText(words[i] + "\n");
+                        }
+                    }
+
+
+
+                }
 
                 tbData.AppendText("\n");
                 tbData.ScrollToCaret();
@@ -310,22 +338,8 @@ namespace SerialPortListener
                 rxByteView.Clear();
                 Array.Clear(rxByte, 0, rxByte.Length);
 
-            }
-            else // CRC check has failed then do this
-            {
-                badData.AppendText("Error Detected \n");
-
-                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
-
-                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
-                // badData.AppendText(sb.ToString()+"\n");
-                rxData.Append(sb);
-                //badData.AppendText("Add: " + rxData+"\n");
-                //byte[] buffer = System.Text.Encoding.UTF8.GetBytes(rxData.ToString());
-                //badData.AppendText("CRC: " +CheckResponse(buffer).ToString()+"\n");
-
-            }
             
+           
         }
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
