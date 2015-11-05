@@ -17,23 +17,18 @@ namespace SerialPortListener
 
         string returnCode;
         string previousSlaveId = "999";
-        string str;
-
-        byte[] rxByte = new byte[1000];
-
+       
         StringBuilder previousMessage;
         StringBuilder sb = new StringBuilder();
-        StringBuilder rxData = new StringBuilder();
-        StringBuilder rxByteView = new StringBuilder();
-
+      
         int repeatCount = 0;
         int rxCRC1 = 0;
         int rxCRC2 = 0;
 
         bool response;
-        //bool rxResponse;
-        bool RX = false;
         
+        bool RX = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -41,13 +36,13 @@ namespace SerialPortListener
 
             UserInitialization();
 
-            
+
 
             btnStart.Enabled = true;
             btnStop.Enabled = false;
         }
 
-      
+
         private void UserInitialization()
         {
             _spManager = new SerialPortManager();
@@ -65,10 +60,10 @@ namespace SerialPortListener
             baudRateComboBox.SelectedIndex = 11; // doesnt work for some reason
         }
 
-        
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _spManager.Dispose();   
+            _spManager.Dispose();
         }
 
         void _spManager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
@@ -81,18 +76,17 @@ namespace SerialPortListener
             }
 
             sb.Clear();
-           
-            str = Encoding.ASCII.GetString(e.Data);
 
-            
-            //StringBuilder sb = new StringBuilder();
-            
-                for (int i = 0; i < e.Data.Length; i++)
-                    sb.AppendFormat("{0:X2} \n", e.Data[i]);
+          
 
-            badData.AppendText (sb.ToString());
-            
-            response =  CheckResponse(e.Data);
+            //StringBuilder sb = new StringBuilder(); // Now declared fo full scope
+
+            for (int i = 0; i < e.Data.Length; i++)
+                sb.AppendFormat("{0:X2} \n", e.Data[i]);
+
+            badData.AppendText(sb.ToString());
+
+            response = CheckResponse(e.Data);
 
             if (response)
             {
@@ -101,226 +95,211 @@ namespace SerialPortListener
             else // CRC check has failed then do this
             {
                 badData.AppendText("Error Detected \n");
-                rxData.Append(sb);
-                
-
+            
             }
-
-
-
-
+            
         }
 
         private void decodeModbus(StringBuilder sb)
         {
-           
-         
-            int startAddressHigh=0;
-            int startAddressLow=0;
-            int numberHigh=0;
-            int numberLow=0;
-            int startAddress=0;
-            int range = 0;
-            int endAddress = 0; 
-          
-            string[] words = sb.ToString().Split(' ');
-            
-                //tbDataRx.AppendText(rxData.ToString());
 
-                rxCRC1 = words.Length - 3;
-                rxCRC2 = words.Length - 2;
-      
-                for (int i = 0; i < words.Length; i++)
+
+            int startAddressHigh = 0;
+            int startAddressLow = 0;
+            int numberHigh = 0;
+            int numberLow = 0;
+            int startAddress = 0;
+            int range = 0;
+            int endAddress = 0;
+
+            string[] words = sb.ToString().Split(' ');
+
+            //tbDataRx.AppendText(rxData.ToString());
+
+            rxCRC1 = words.Length - 3;
+            rxCRC2 = words.Length - 2;
+
+            for (int i = 0; i < words.Length; i++)
+            {
+
+                switch (i) // Decode dependant on which part of the message is being decoded
                 {
 
-                    switch (i) // Decode dependant on which part of the message is being decoded
-                    {
-
-                        case 0:
-                            if ((previousSlaveId == words[i]) && (repeatCount ==0 ))
-                            {
-                                RX = true;
-                                
-                                tbDataRx.Text = ("Slave Response \n");
-                                int value = Convert.ToInt32(previousSlaveId, 16);
-                                tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
-                                tbDataRx.AppendText("Calculated CRC: " + response + "\n");
-                                previousSlaveId = " ";
-                            }
-                            else
-                            {
-                                RX = false;
-                                tbData.Text = ("Master Request \n");
-                                previousSlaveId = words[i];
-                                tbData.AppendText("Slave Address: ");
-                                int value = Convert.ToInt32(words[i], 16);
-                                tbData.AppendText(value.ToString() + "\n");
-                                tbData.AppendText("Calculated CRC: " + response + "\n");
-                            }
-
-                            break;
-
-                        case 1:
-                            getFunctionCode(words[i]);
-                            if (RX)
-                            {
-                                tbDataRx.AppendText(returnCode + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText(returnCode + "\n");
-                            }
-
-                            break;
-
-                        case 2:
-                            try
-                            {
-                                startAddressHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
-                            }
-                            catch
-                            {
-                                numberHigh = 999;
-                            }
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("Data High: ");
-                                tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("Start Address High: ");
-                                tbData.AppendText(startAddressHigh.ToString() + "\n");
-                            }
-
-                            break;
-
-                        case 3:
-                            startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("Data Low: ");
-                                tbDataRx.AppendText(startAddressLow.ToString() + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("Start Addess Low: ");
-                                tbData.AppendText(startAddressLow.ToString() + "\n");
-                            }
-
-                            break;
-
-                        case 4:
-                            try
-                            {
-                                numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
-                            }
-                            catch
-                            {
-                                numberHigh = 999;
-                            }
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("Data High: ");
-                                tbDataRx.AppendText(numberHigh.ToString() + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("Number High: ");
-                                tbData.AppendText(numberHigh.ToString() + "\n");
-                            }
-
-                            break;
-
-                        case 5:
-                            try
-                            {
-                                numberLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
-                            }
-                            catch
-                            {
-                                numberLow = 999;
-                            }
-                            if (RX)
-                            {
-                                tbDataRx.AppendText("Data Low: ");
-                                tbDataRx.AppendText(numberLow.ToString() + "\n");
-
-
-                                startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
-                                range = (numberHigh * 256) + (numberLow);
-                                endAddress = startAddress + range;
-
-                                //tbDataRx.AppendText("\n Start of Data : " + startAddress + "\n");
-                               // tbDataRx.AppendText("\n End of Data : " + endAddress + "\n");
-                            }
-                            else
-                            {
-                                tbData.AppendText("Number Low: ");
-                                tbData.AppendText(numberLow.ToString() + "\n");
-
-
-                                startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
-                                range = (numberHigh * 256) + (numberLow);
-                                endAddress = startAddress + range;
-
-                                tbData.AppendText("\n Start of Data : " + startAddress + "\n");
-                                tbData.AppendText("\n End of Data : " + endAddress + "\n");
-                            }
-                            break;
-
-
-                    }
-
-                    if (i == rxCRC1)
-                    {
-                        if (RX)
+                    case 0:
+                        if ((previousSlaveId == words[i]) && (repeatCount == 0))
                         {
-                            tbDataRx.AppendText("CRC: ");
-                            tbDataRx.AppendText(words[i] + "\n");
+                            RX = true;
+
+                            tbDataRx.Text = ("Slave Response \n");
+                            int value = Convert.ToInt32(previousSlaveId, 16);
+                            tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
+                            tbDataRx.AppendText("Calculated CRC: " + response + "\n");
+                            previousSlaveId = " ";
                         }
                         else
                         {
-                            tbData.AppendText("CRC: ");
-                            tbData.AppendText(words[i] + "\n");
+                            RX = false;
+                            tbData.Text = ("Master Request \n");
+                            previousSlaveId = words[i];
+                            tbData.AppendText("Slave Address: ");
+                            int value = Convert.ToInt32(words[i], 16);
+                            tbData.AppendText(value.ToString() + "\n");
+                            tbData.AppendText("Calculated CRC: " + response + "\n");
                         }
-                    }
 
-                    if (i == rxCRC2)
-                    {
+                        break;
+
+                    case 1:
+                        getFunctionCode(words[i]);
                         if (RX)
                         {
-                            tbDataRx.AppendText("CRC: ");
-                            tbDataRx.AppendText(words[i] + "\n");
+                            tbDataRx.AppendText(returnCode + "\n");
                         }
                         else
                         {
-                            tbData.AppendText("CRC: ");
-                            tbData.AppendText(words[i] + "\n");
+                            tbData.AppendText(returnCode + "\n");
                         }
-                    }
 
+                        break;
+
+                    case 2:
+                        try
+                        {
+                            startAddressHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        }
+                        catch
+                        {
+                            numberHigh = 999;
+                        }
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("Data High: ");
+                            tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("Start Address High: ");
+                            tbData.AppendText(startAddressHigh.ToString() + "\n");
+                        }
+
+                        break;
+
+                    case 3:
+                        startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("Data Low: ");
+                            tbDataRx.AppendText(startAddressLow.ToString() + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("Start Addess Low: ");
+                            tbData.AppendText(startAddressLow.ToString() + "\n");
+                        }
+
+                        break;
+
+                    case 4:
+                        try
+                        {
+                            numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        }
+                        catch
+                        {
+                            numberHigh = 999;
+                        }
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("Data High: ");
+                            tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("Number High: ");
+                            tbData.AppendText(numberHigh.ToString() + "\n");
+                        }
+
+                        break;
+
+                    case 5:
+                        try
+                        {
+                            numberLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        }
+                        catch
+                        {
+                            numberLow = 999;
+                        }
+                        if (RX)
+                        {
+                            tbDataRx.AppendText("Data Low: ");
+                            tbDataRx.AppendText(numberLow.ToString() + "\n");
+
+
+                            startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
+                            range = (numberHigh * 256) + (numberLow);
+                            endAddress = startAddress + range;
+
+                            //tbDataRx.AppendText("\n Start of Data : " + startAddress + "\n");
+                            // tbDataRx.AppendText("\n End of Data : " + endAddress + "\n");
+                        }
+                        else
+                        {
+                            tbData.AppendText("Number Low: ");
+                            tbData.AppendText(numberLow.ToString() + "\n");
+
+
+                            startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
+                            range = (numberHigh * 256) + (numberLow);
+                            endAddress = startAddress + range;
+
+                            tbData.AppendText("\n Start of Data : " + startAddress + "\n");
+                            tbData.AppendText("\n End of Data : " + endAddress + "\n");
+                        }
+                        break;
 
 
                 }
 
-                tbData.AppendText("\n");
-                tbData.ScrollToCaret();
+                if (i == rxCRC1)
+                {
+                    if (RX)
+                    {
+                        tbDataRx.AppendText("CRC: ");
+                        tbDataRx.AppendText(words[i] + "\n");
+                    }
+                    else
+                    {
+                        tbData.AppendText("CRC: ");
+                        tbData.AppendText(words[i] + "\n");
+                    }
+                }
 
-                tbDataRx.AppendText("\n");
-                tbDataRx.ScrollToCaret();
-                previousMessage = sb;
-            
-                
+                if (i == rxCRC2)
+                {
+                    if (RX)
+                    {
+                        tbDataRx.AppendText("CRC: ");
+                        tbDataRx.AppendText(words[i] + "\n");
+                    }
+                    else
+                    {
+                        tbData.AppendText("CRC: ");
+                        tbData.AppendText(words[i] + "\n");
+                    }
+                }
 
-            
 
-                rxData.Clear();
-                rxByteView.Clear();
-                Array.Clear(rxByte, 0, rxByte.Length);
 
-            
-           
+            }
+
+            tbData.AppendText("\n");
+            tbData.ScrollToCaret();
+
+            tbDataRx.AppendText("\n");
+            tbDataRx.ScrollToCaret();
+            previousMessage = sb;
+
         }
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
@@ -394,7 +373,7 @@ namespace SerialPortListener
             {
                 case 1:
                     returnCode = "Read Coil Status ";
-                break;
+                    break;
 
                 case 2:
                     returnCode = "Read Input Status ";
@@ -406,7 +385,7 @@ namespace SerialPortListener
 
                 case 4:
                     returnCode = "Read Input Registers ";
-                    break; 
+                    break;
 
                 case 5:
                     returnCode = "Force Single Coil ";
@@ -425,7 +404,7 @@ namespace SerialPortListener
                     break;
 
             }
-            
+
 
         }
 
