@@ -19,14 +19,16 @@ namespace SerialPortListener
         string previousSlaveId = " ";
         string str;
 
-        byte[] rxByte;
+        byte[] rxByte = new byte[1000];
 
         StringBuilder previousMessage;
         StringBuilder sb = new StringBuilder();
         StringBuilder rxData = new StringBuilder();
+        StringBuilder rxByteView = new StringBuilder();
 
         int repeatCount = 0;
         bool response;
+        bool rxResponse;
         bool RX = false;
         
         public MainForm()
@@ -78,17 +80,32 @@ namespace SerialPortListener
             sb.Clear();
            
             str = Encoding.ASCII.GetString(e.Data);
+
+            if (rxByte == null)
+            {
+                rxByte = e.Data;
+
+            }
+            else
+            {
+                e.Data.CopyTo(rxByte, e.Data.Length);
+            }
             
             //StringBuilder sb = new StringBuilder();
             
                 for (int i = 0; i < e.Data.Length; i++)
                     sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
+            for (int i = 0; i < rxByte.Length; i++)
+                rxByteView.AppendFormat("{0:X2} \n", rxByte[i]);
 
-           
-            badData.AppendText("Data: "+sb.ToString()+"\n");
+
+
+            
 
             response =  CheckResponse(e.Data);
+            
+
             decodeModbus(sb);
           
 
@@ -300,9 +317,14 @@ namespace SerialPortListener
                 tbDataRx.ScrollToCaret();
                 previousMessage = sb;
 
-                rxData.Clear();
+                rxResponse = CheckResponse(rxByte);
 
-                
+                badData.AppendText("Byte CRC: " + rxResponse.ToString() + "\n");
+
+                rxData.Clear();
+                rxByteView.Clear();
+                Array.Clear(rxByte, 0, rxByte.Length);
+
             }
             else
             {
