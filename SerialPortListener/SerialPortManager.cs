@@ -65,6 +65,7 @@ namespace SerialPortListener.Serial
         
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            Thread.Sleep(50);
             int dataLength = _serialPort.BytesToRead;
             byte[] data = new byte[dataLength];
 
