@@ -118,22 +118,11 @@ namespace SerialPortListener
             int range = 0;
             int endAddress = 0; 
           
-            
-            //tbData.AppendText("Repeat Count: " + repeatCount.ToString() + "\n");
-
             string[] words = sb.ToString().Split(' ');
             if (response)
             {
                 tbDataRx.AppendText(rxData.ToString());
-               
-
-                
-
-
-
-                //tbDataRx.AppendText("CRC: " +CheckResponse(bytes).ToString()+"\n");
-                //tbDataRx.AppendText("buffer: " + buffer[1].ToString());
-
+      
                 for (int i = 0; i < words.Length; i++)
                 {
 
