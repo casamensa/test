@@ -81,28 +81,13 @@ namespace SerialPortListener
            
             str = Encoding.ASCII.GetString(e.Data);
 
-            if (rxByte == null)
-            {
-                rxByte = e.Data;
-
-            }
-            else
-            {
-                e.Data.CopyTo(rxByte, e.Data.Length);
-            }
             
             //StringBuilder sb = new StringBuilder();
             
                 for (int i = 0; i < e.Data.Length; i++)
                     sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
-            for (int i = 0; i < rxByte.Length; i++)
-                rxByteView.AppendFormat("{0:X2} \n", rxByte[i]);
-
-
-
             
-
             response =  CheckResponse(e.Data);
             
 
@@ -136,14 +121,14 @@ namespace SerialPortListener
             int endAddress = 0; 
           
             string[] words = sb.ToString().Split(' ');
-            if (response)
+            if (response || rxResponse) // If the CRC checkes for TX or RX pass then enter here
             {
                 tbDataRx.AppendText(rxData.ToString());
       
                 for (int i = 0; i < words.Length; i++)
                 {
 
-                    switch (i)
+                    switch (i) // Decode dependant on which part of the message is being decoded
                     {
 
                         case 0:
@@ -317,16 +302,20 @@ namespace SerialPortListener
                 tbDataRx.ScrollToCaret();
                 previousMessage = sb;
 
-                rxResponse = CheckResponse(rxByte);
+                rxResponse = CheckResponse(GetBytes(rxData.ToString()));
 
-                badData.AppendText("Byte CRC: " + rxResponse.ToString() + "\n");
+                badData.AppendText("RX CRC: " + rxResponse.ToString() + "\n");
+
+                
+
+            
 
                 rxData.Clear();
                 rxByteView.Clear();
                 Array.Clear(rxByte, 0, rxByte.Length);
 
             }
-            else
+            else // CRC check has failed then do this
             {
                 badData.AppendText("Error Detected \n");
                 // badData.AppendText(sb.ToString()+"\n");
@@ -339,7 +328,7 @@ namespace SerialPortListener
             
         }
 
-        private void GetCRC(byte[] message, ref byte[] CRC)
+        private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
         {
             //Function expects a modbus message of any length as well as a 2 byte CRC array in which to 
             //return the CRC values:
@@ -365,7 +354,9 @@ namespace SerialPortListener
             CRC[0] = CRCLow = (byte)(CRCFull & 0xFF);
         }
 
-        private bool CheckResponse(byte[] response)
+
+
+        private bool CheckResponse(byte[] response) // Check the CRC
         {
             //Perform a basic CRC check:
             byte[] CRC = new byte[2];
@@ -383,9 +374,14 @@ namespace SerialPortListener
             }
         }
 
-       
+        private byte[] GetBytes(string str) // Returns a byte array from a string
+        {
+            byte[] bytes = new byte[str.Length * sizeof(char)];
+            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            return bytes;
+        }
 
-        private void getFunctionCode(string code)
+        private void getFunctionCode(string code) // Set the returncode to decode the function
         {
             int num;
 
