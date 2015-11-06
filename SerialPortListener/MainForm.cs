@@ -135,6 +135,7 @@ namespace SerialPortListener
                             tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
                             tbDataRx.AppendText("Calculated CRC: " + response + "\n");
                             previousSlaveId = " ";
+                            repeatCount++;
                         }
                         else
                         {
@@ -145,6 +146,7 @@ namespace SerialPortListener
                             int value = Convert.ToInt32(words[i], 16);
                             tbData.AppendText(value.ToString() + "\n");
                             tbData.AppendText("Calculated CRC: " + response + "\n");
+                            repeatCount = 0;
                         }
 
                         break;
@@ -439,6 +441,7 @@ namespace SerialPortListener
         {
             btnStart.Enabled = true;
             btnStop.Enabled = false;
+            sb.Clear();
             _spManager.StopListening();
         }
 
