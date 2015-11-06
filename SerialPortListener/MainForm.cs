@@ -303,7 +303,7 @@ namespace SerialPortListener
                     }
 
                     tbDataRx.AppendText("Data: ");
-                    tbDataRx.AppendText(numberLow.ToString() + "\n");
+                    tbDataRx.AppendText(numberHigh.ToString() + "\n");
 
                 }
 
