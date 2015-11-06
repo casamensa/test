@@ -302,8 +302,10 @@ namespace SerialPortListener
                         numberHigh = 999;
                     }
 
+                    string binary = Convert.ToString(numberHigh, 2);
+
                     tbDataRx.AppendText("Data: ");
-                    tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                    tbDataRx.AppendText(numberHigh.ToString() + "  Binary: "+binary+"\n");
 
                 }
 

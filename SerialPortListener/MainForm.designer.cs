@@ -112,7 +112,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(13, 477);
+            this.btnStart.Location = new System.Drawing.Point(293, 9);
             this.btnStart.Margin = new System.Windows.Forms.Padding(4);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(113, 28);
@@ -126,17 +126,17 @@
             this.tbData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbData.Location = new System.Drawing.Point(12, 230);
+            this.tbData.Location = new System.Drawing.Point(12, 241);
             this.tbData.Margin = new System.Windows.Forms.Padding(4);
             this.tbData.Multiline = true;
             this.tbData.Name = "tbData";
             this.tbData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbData.Size = new System.Drawing.Size(429, 239);
+            this.tbData.Size = new System.Drawing.Size(565, 543);
             this.tbData.TabIndex = 13;
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(134, 477);
+            this.btnStop.Location = new System.Drawing.Point(293, 46);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(113, 28);
@@ -150,12 +150,12 @@
             this.tbDataRx.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDataRx.Location = new System.Drawing.Point(453, 231);
+            this.tbDataRx.Location = new System.Drawing.Point(585, 241);
             this.tbDataRx.Margin = new System.Windows.Forms.Padding(4);
             this.tbDataRx.Multiline = true;
             this.tbDataRx.Name = "tbDataRx";
             this.tbDataRx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbDataRx.Size = new System.Drawing.Size(454, 238);
+            this.tbDataRx.Size = new System.Drawing.Size(573, 543);
             this.tbDataRx.TabIndex = 14;
             // 
             // badData
@@ -163,12 +163,12 @@
             this.badData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.badData.Location = new System.Drawing.Point(452, 38);
+            this.badData.Location = new System.Drawing.Point(587, 38);
             this.badData.Margin = new System.Windows.Forms.Padding(4);
             this.badData.Multiline = true;
             this.badData.Name = "badData";
             this.badData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.badData.Size = new System.Drawing.Size(455, 185);
+            this.badData.Size = new System.Drawing.Size(571, 185);
             this.badData.TabIndex = 15;
             // 
             // tabControl1
@@ -178,7 +178,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 13);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(434, 210);
+            this.tabControl1.Size = new System.Drawing.Size(568, 210);
             this.tabControl1.TabIndex = 16;
             // 
             // tabPageSerial
@@ -187,7 +187,9 @@
             this.tabPageSerial.Controls.Add(baudRateLabel);
             this.tabPageSerial.Controls.Add(this.stopBitsComboBox);
             this.tabPageSerial.Controls.Add(stopBitsLabel);
+            this.tabPageSerial.Controls.Add(this.btnStop);
             this.tabPageSerial.Controls.Add(dataBitsLabel);
+            this.tabPageSerial.Controls.Add(this.btnStart);
             this.tabPageSerial.Controls.Add(this.portNameComboBox);
             this.tabPageSerial.Controls.Add(this.dataBitsComboBox);
             this.tabPageSerial.Controls.Add(portNameLabel);
@@ -196,7 +198,7 @@
             this.tabPageSerial.Location = new System.Drawing.Point(4, 25);
             this.tabPageSerial.Name = "tabPageSerial";
             this.tabPageSerial.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSerial.Size = new System.Drawing.Size(426, 181);
+            this.tabPageSerial.Size = new System.Drawing.Size(560, 181);
             this.tabPageSerial.TabIndex = 0;
             this.tabPageSerial.Text = "Serial Settings";
             this.tabPageSerial.UseVisualStyleBackColor = true;
@@ -257,7 +259,7 @@
             this.tabPageOptions.Location = new System.Drawing.Point(4, 25);
             this.tabPageOptions.Name = "tabPageOptions";
             this.tabPageOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageOptions.Size = new System.Drawing.Size(426, 181);
+            this.tabPageOptions.Size = new System.Drawing.Size(580, 181);
             this.tabPageOptions.TabIndex = 1;
             this.tabPageOptions.Text = "Options";
             this.tabPageOptions.UseVisualStyleBackColor = true;
@@ -283,13 +285,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 529);
+            this.ClientSize = new System.Drawing.Size(1172, 797);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.badData);
             this.Controls.Add(this.tbDataRx);
             this.Controls.Add(this.tbData);
-            this.Controls.Add(this.btnStop);
-            this.Controls.Add(this.btnStart);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Modbus Mon";

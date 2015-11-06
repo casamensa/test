@@ -97,7 +97,7 @@ namespace SerialPortListener.Serial
             // Setting serial port settings // set to 9600 for ease of testing
             _serialPort = new SerialPort(
                 _currentSerialSettings.PortName,
-                9600,
+                _currentSerialSettings.BaudRate,
                 _currentSerialSettings.Parity,
                 _currentSerialSettings.DataBits,
                 _currentSerialSettings.StopBits);
