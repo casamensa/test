@@ -65,7 +65,7 @@ namespace SerialPortListener.Serial
         
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            Thread.Sleep(50);
+            Thread.Sleep(50); // This is required to allow the buffer time to fill
             int dataLength = _serialPort.BytesToRead;
             byte[] data = new byte[dataLength];
 

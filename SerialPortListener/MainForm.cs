@@ -173,8 +173,8 @@ namespace SerialPortListener
                         }
                         if (RX)
                         {
-                            tbDataRx.AppendText("Data High: ");
-                            tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
+                            //tbDataRx.AppendText("Data High: ");
+                            //tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
                         }
                         else
                         {
@@ -188,8 +188,8 @@ namespace SerialPortListener
                         startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
                         if (RX)
                         {
-                            tbDataRx.AppendText("Data Low: ");
-                            tbDataRx.AppendText(startAddressLow.ToString() + "\n");
+                            //tbDataRx.AppendText("Data Low: ");
+                           // tbDataRx.AppendText(startAddressLow.ToString() + "\n");
                         }
                         else
                         {
@@ -210,8 +210,8 @@ namespace SerialPortListener
                         }
                         if (RX)
                         {
-                            tbDataRx.AppendText("Data High: ");
-                            tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                            //tbDataRx.AppendText("Data High: ");
+                           // tbDataRx.AppendText(numberHigh.ToString() + "\n");
                         }
                         else
                         {
@@ -232,8 +232,8 @@ namespace SerialPortListener
                         }
                         if (RX)
                         {
-                            tbDataRx.AppendText("Data Low: ");
-                            tbDataRx.AppendText(numberLow.ToString() + "\n");
+                           // tbDataRx.AppendText("Data Low: ");
+                           // tbDataRx.AppendText(numberLow.ToString() + "\n");
 
 
                             startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
@@ -260,6 +260,8 @@ namespace SerialPortListener
 
 
                 }
+
+               
 
                 if (i == rxCRC1)
                 {
@@ -289,7 +291,21 @@ namespace SerialPortListener
                     }
                 }
 
+                if (RX && i >= 3 && i < words.Length - 3)
+                {
+                    try
+                    {
+                        numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                    }
+                    catch
+                    {
+                        numberHigh = 999;
+                    }
 
+                    tbDataRx.AppendText("Data: ");
+                    tbDataRx.AppendText(numberLow.ToString() + "\n");
+
+                }
 
             }
 
