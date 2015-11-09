@@ -95,6 +95,7 @@ namespace SerialPortListener
             else // CRC check has failed then do this
             {
                 badData.AppendText("Error Detected \n");
+                decodeModbus(sb);
             
             }
             
@@ -126,7 +127,16 @@ namespace SerialPortListener
                 {
 
                     case 0:
-                        if ((previousSlaveId == words[i]) && (repeatCount == 0))
+                        
+
+                        if (Convert.ToInt32(words[i], 16)==136)
+                        {
+                            tbData.Text = ("Bad Data - Check Polarity");
+                            tbDataRx.Text = ("Bad Data - Check Polarity");
+                            badData.Text = ("Bad Data - Check Polarity");
+                        }
+
+                        else if ((previousSlaveId == words[i]) && (repeatCount == 0))
                         {
                             RX = true;
 
@@ -416,7 +426,7 @@ namespace SerialPortListener
                     break;
 
                 case 9:
-                    returnCode = "Broken ";
+                    returnCode = "Error Function Code";
                     break;
 
                 default:
