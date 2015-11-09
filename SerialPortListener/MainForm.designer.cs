@@ -42,13 +42,15 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
             this.parityComboBox = new System.Windows.Forms.ComboBox();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.radioButtonLogging = new System.Windows.Forms.RadioButton();
+            this.textBoxPath = new System.Windows.Forms.TextBox();
+            this.buttonSet = new System.Windows.Forms.Button();
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
             dataBitsLabel = new System.Windows.Forms.Label();
@@ -56,8 +58,8 @@
             parityLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageSerial.SuspendLayout();
-            this.tabPageOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
+            this.tabPageOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // baudRateLabel
@@ -213,6 +215,10 @@
             this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
             this.baudRateComboBox.TabIndex = 12;
             // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
+            // 
             // stopBitsComboBox
             // 
             this.stopBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "StopBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -255,31 +261,46 @@
             // 
             // tabPageOptions
             // 
-            this.tabPageOptions.Controls.Add(this.radioButton1);
+            this.tabPageOptions.Controls.Add(this.buttonSet);
+            this.tabPageOptions.Controls.Add(this.textBoxPath);
+            this.tabPageOptions.Controls.Add(this.radioButtonLogging);
             this.tabPageOptions.Location = new System.Drawing.Point(4, 25);
             this.tabPageOptions.Name = "tabPageOptions";
             this.tabPageOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageOptions.Size = new System.Drawing.Size(580, 181);
+            this.tabPageOptions.Size = new System.Drawing.Size(560, 181);
             this.tabPageOptions.TabIndex = 1;
             this.tabPageOptions.Text = "Options";
             this.tabPageOptions.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // radioButtonLogging
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 6);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(110, 21);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "radioButton1";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.radioButtonLogging.AutoSize = true;
+            this.radioButtonLogging.Checked = true;
+            this.radioButtonLogging.Location = new System.Drawing.Point(6, 41);
+            this.radioButtonLogging.Name = "radioButtonLogging";
+            this.radioButtonLogging.Size = new System.Drawing.Size(128, 21);
+            this.radioButtonLogging.TabIndex = 0;
+            this.radioButtonLogging.TabStop = true;
+            this.radioButtonLogging.Text = "Enable Logging";
+            this.radioButtonLogging.UseVisualStyleBackColor = true;
+            this.radioButtonLogging.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
-            // serialSettingsBindingSource
+            // textBoxPath
             // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
+            this.textBoxPath.Location = new System.Drawing.Point(6, 13);
+            this.textBoxPath.Name = "textBoxPath";
+            this.textBoxPath.Size = new System.Drawing.Size(356, 22);
+            this.textBoxPath.TabIndex = 1;
+            // 
+            // buttonSet
+            // 
+            this.buttonSet.Location = new System.Drawing.Point(378, 12);
+            this.buttonSet.Name = "buttonSet";
+            this.buttonSet.Size = new System.Drawing.Size(75, 23);
+            this.buttonSet.TabIndex = 2;
+            this.buttonSet.Text = "Set";
+            this.buttonSet.UseVisualStyleBackColor = true;
+            this.buttonSet.Click += new System.EventHandler(this.buttonSet_Click);
             // 
             // MainForm
             // 
@@ -296,9 +317,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,7 +341,9 @@
         private System.Windows.Forms.ComboBox dataBitsComboBox;
         private System.Windows.Forms.ComboBox parityComboBox;
         private System.Windows.Forms.TabPage tabPageOptions;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButtonLogging;
+        private System.Windows.Forms.Button buttonSet;
+        private System.Windows.Forms.TextBox textBoxPath;
     }
 }
 

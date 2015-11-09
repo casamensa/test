@@ -17,11 +17,14 @@ namespace SerialPortListener
 
         string returnCode;
         string previousSlaveId = "999";
+        string previousFunctionCode = "999";
+        string filename = "c:\\test.log";
        
-        StringBuilder previousMessage;
+        StringBuilder previousMessage = new StringBuilder();
         StringBuilder sb = new StringBuilder();
+        StringBuilder outText = new StringBuilder();
       
-        int repeatCount = 0;
+        int serialCount = 0;
         int rxCRC1 = 0;
         int rxCRC2 = 0;
 
@@ -58,6 +61,7 @@ namespace SerialPortListener
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
 
             baudRateComboBox.SelectedIndex = 11; // doesnt work for some reason
+            
         }
 
 
@@ -85,10 +89,13 @@ namespace SerialPortListener
                 sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
             badData.AppendText(sb.ToString());
+           
 
             response = CheckResponse(e.Data);
 
-            if (response)
+           
+
+            if (response && serialCount > 4)
             {
                 decodeModbus(sb);
             }
@@ -98,7 +105,8 @@ namespace SerialPortListener
                 decodeModbus(sb);
             
             }
-            
+
+            serialCount++;
         }
 
         private void decodeModbus(StringBuilder sb)
@@ -114,6 +122,17 @@ namespace SerialPortListener
             int endAddress = 0;
 
             string[] words = sb.ToString().Split(' ');
+
+            if (words[1]!=previousFunctionCode)
+            {
+               
+                RX = true;
+            }
+            else
+            {
+                RX = false;
+                previousFunctionCode = words[1];
+            }
 
             //tbDataRx.AppendText(rxData.ToString());
 
@@ -134,9 +153,10 @@ namespace SerialPortListener
                             tbData.Text = ("Bad Data - Check Polarity");
                             tbDataRx.Text = ("Bad Data - Check Polarity");
                             badData.Text = ("Bad Data - Check Polarity");
+                            outText.Append("Bad Data - Check Polarity \n");
                         }
 
-                        else if ((previousSlaveId == words[i]) && (repeatCount == 0))
+                        else if (previousSlaveId == words[i])
                         {
                             RX = true;
 
@@ -145,7 +165,11 @@ namespace SerialPortListener
                             tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
                             tbDataRx.AppendText("Calculated CRC: " + response + "\n");
                             previousSlaveId = " ";
-                            repeatCount++;
+
+                            outText.Append("Slave Response \n");
+                            outText.Append("Slave Address:" + value.ToString() + "\n");
+                            outText.Append("Calculated CRC: " + response + "\n");
+                            
                         }
                         else
                         {
@@ -156,20 +180,28 @@ namespace SerialPortListener
                             int value = Convert.ToInt32(words[i], 16);
                             tbData.AppendText(value.ToString() + "\n");
                             tbData.AppendText("Calculated CRC: " + response + "\n");
-                            repeatCount = 0;
+
+                            outText.Append("Master Request \n");
+                            outText.Append("Slave Address:" + value.ToString() + "\n");
+                            outText.Append("Calculated CRC: " + response + "\n");
+
                         }
 
                         break;
 
                     case 1:
+                        
+
                         getFunctionCode(words[i]);
                         if (RX)
                         {
                             tbDataRx.AppendText(returnCode + "\n");
+                            outText.Append(returnCode + "\n");
                         }
                         else
                         {
                             tbData.AppendText(returnCode + "\n");
+                            outText.Append(returnCode + "\n");
                         }
 
                         break;
@@ -192,6 +224,8 @@ namespace SerialPortListener
                         {
                             tbData.AppendText("Start Address High: ");
                             tbData.AppendText(startAddressHigh.ToString() + "\n");
+
+                            outText.Append("Start Address High: " + startAddressHigh.ToString() + "\n");
                         }
 
                         break;
@@ -207,6 +241,8 @@ namespace SerialPortListener
                         {
                             tbData.AppendText("Start Addess Low: ");
                             tbData.AppendText(startAddressLow.ToString() + "\n");
+
+                            outText.Append("Start Addess Low: " + startAddressLow.ToString() + "\n");
                         }
 
                         break;
@@ -229,6 +265,8 @@ namespace SerialPortListener
                         {
                             tbData.AppendText("Number High: ");
                             tbData.AppendText(numberHigh.ToString() + "\n");
+
+                            outText.Append("Number High: "+ numberHigh.ToString() + "\n");
                         }
 
                         break;
@@ -267,6 +305,11 @@ namespace SerialPortListener
 
                             tbData.AppendText("\n Start of Data : " + startAddress + "\n");
                             tbData.AppendText("\n End of Data : " + endAddress + "\n");
+
+
+                            outText.Append("Number Low: "+ numberLow.ToString() + "\n");
+                            outText.Append("\n Start of Data: " + startAddress + "\n");
+                            outText.Append("\n End of Data : " + endAddress + "\n");
                         }
                         break;
 
@@ -319,6 +362,8 @@ namespace SerialPortListener
                     tbDataRx.AppendText("Data: ");
                     tbDataRx.AppendText(numberHigh.ToString() + "  Binary: "+binary+"\n");
 
+                    outText.Append("Data: "+numberHigh.ToString() + "  Binary: " + binary + "\n");
+
                 }
 
             }
@@ -328,7 +373,11 @@ namespace SerialPortListener
 
             tbDataRx.AppendText("\n");
             tbDataRx.ScrollToCaret();
-            previousMessage = sb;
+
+            if (radioButtonLogging.Checked)
+            {
+                writeToFile(outText);
+            }
 
         }
 
@@ -438,11 +487,20 @@ namespace SerialPortListener
 
         }
 
+        private void writeToFile(StringBuilder sb)
+        {
+            System.IO.StreamWriter file = new System.IO.StreamWriter(filename,true);
+            file.WriteLine(sb.ToString() + "\n");
+
+            file.Close();
+        }
+
         // Handles the "Start Listening"-buttom click event
         private void btnStart_Click(object sender, EventArgs e)
         {
             btnStart.Enabled = false;
             btnStop.Enabled = true;
+            serialCount = 0;
             _spManager.StartListening();
         }
 
@@ -452,6 +510,8 @@ namespace SerialPortListener
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             sb.Clear();
+            previousFunctionCode = "999";
+            
             _spManager.StopListening();
         }
 
@@ -463,6 +523,22 @@ namespace SerialPortListener
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void buttonSet_Click(object sender, EventArgs e)
+        {
+            
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "log files (*.log)|*.log|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                filename = saveFileDialog1.FileName;
+                
+            }
         }
     }
 }
