@@ -7,6 +7,7 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Threading;
 using System.IO;
+using System.Windows.Forms;
 
 namespace SerialPortListener.Serial
 {
@@ -66,19 +67,29 @@ namespace SerialPortListener.Serial
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             Thread.Sleep(50); // This is required to allow the buffer time to fill
-            int dataLength = _serialPort.BytesToRead;
-            byte[] data = new byte[dataLength];
 
-           
+            try
+            {
+                int dataLength = _serialPort.BytesToRead;
 
-            int nbrDataRead = _serialPort.Read(data, 0, dataLength);
-           
-            if (nbrDataRead == 0)
-                return;
-            
-            // Send data to whom ever interested
-            if (NewSerialDataRecieved != null)
-                NewSerialDataRecieved(this, new SerialDataEventArgs(data));
+                byte[] data = new byte[dataLength];
+
+
+
+
+                int nbrDataRead = _serialPort.Read(data, 0, dataLength);
+
+                if (nbrDataRead == 0)
+                    return;
+
+                // Send data to whom ever interested
+                if (NewSerialDataRecieved != null)
+                    NewSerialDataRecieved(this, new SerialDataEventArgs(data));
+            }
+            catch (System.InvalidOperationException err)
+            {
+                MessageBox.Show("Error in Serial"+err.ToString());
+            }
         }
 
         #endregion

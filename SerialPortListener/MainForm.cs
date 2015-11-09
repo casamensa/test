@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using SerialPortListener.Serial;
 using System.IO;
+using System.Threading;
 
 namespace SerialPortListener
 {
@@ -80,6 +81,7 @@ namespace SerialPortListener
             }
 
             sb.Clear();
+            outText.Clear();
 
           
 
@@ -101,7 +103,9 @@ namespace SerialPortListener
             }
             else // CRC check has failed then do this
             {
+                badData.Font = new Font("Serif", 10, FontStyle.Bold);
                 badData.AppendText("Error Detected \n");
+                badData.Font = new Font("Serif", 8, FontStyle.Regular);
                 decodeModbus(sb);
             
             }
@@ -231,7 +235,22 @@ namespace SerialPortListener
                         break;
 
                     case 3:
-                        startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        try
+                        {
+                            startAddressLow = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        }
+                        catch
+                        {
+                            badData.Text = ("Warning \n");
+                            badData.Font = new Font("Serif", 24, FontStyle.Bold);
+                            badData.AppendText("Comm port speed error \n");
+                            Thread.Sleep(500);
+                            tbData.AppendText("Comm port speed error \n");
+                            tbDataRx.AppendText("Possible comm speed error \n");
+                            badData.Font = new Font("Serif", 8, FontStyle.Regular);
+
+                        }
+
                         if (RX)
                         {
                             //tbDataRx.AppendText("Data Low: ");
@@ -374,9 +393,10 @@ namespace SerialPortListener
             tbDataRx.AppendText("\n");
             tbDataRx.ScrollToCaret();
 
-            if (radioButtonLogging.Checked)
+            if (checkBoxLogging.Checked)
             {
                 writeToFile(outText);
+                writeToFile(sb);
             }
 
         }
@@ -489,10 +509,16 @@ namespace SerialPortListener
 
         private void writeToFile(StringBuilder sb)
         {
-            System.IO.StreamWriter file = new System.IO.StreamWriter(filename,true);
-            file.WriteLine(sb.ToString() + "\n");
+            try {
+                System.IO.StreamWriter file = new System.IO.StreamWriter(filename, true);
+                file.WriteLine(sb.ToString() + "\n\n");
 
-            file.Close();
+                file.Close();
+            }
+            catch (System.UnauthorizedAccessException e)
+            {
+                badData.Text = "Error writing data to file: " + e.GetBaseException();
+            }
         }
 
         // Handles the "Start Listening"-buttom click event
@@ -537,8 +563,14 @@ namespace SerialPortListener
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 filename = saveFileDialog1.FileName;
+                textBoxPath.Text = filename;
                 
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

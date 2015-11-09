@@ -42,15 +42,15 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
             this.parityComboBox = new System.Windows.Forms.ComboBox();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
-            this.radioButtonLogging = new System.Windows.Forms.RadioButton();
             this.textBoxPath = new System.Windows.Forms.TextBox();
             this.buttonSet = new System.Windows.Forms.Button();
+            this.checkBoxLogging = new System.Windows.Forms.CheckBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
             dataBitsLabel = new System.Windows.Forms.Label();
@@ -58,8 +58,8 @@
             parityLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageSerial.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.tabPageOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // baudRateLabel
@@ -132,6 +132,7 @@
             this.tbData.Margin = new System.Windows.Forms.Padding(4);
             this.tbData.Multiline = true;
             this.tbData.Name = "tbData";
+            this.tbData.ReadOnly = true;
             this.tbData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbData.Size = new System.Drawing.Size(565, 543);
             this.tbData.TabIndex = 13;
@@ -156,6 +157,7 @@
             this.tbDataRx.Margin = new System.Windows.Forms.Padding(4);
             this.tbDataRx.Multiline = true;
             this.tbDataRx.Name = "tbDataRx";
+            this.tbDataRx.ReadOnly = true;
             this.tbDataRx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbDataRx.Size = new System.Drawing.Size(573, 543);
             this.tbDataRx.TabIndex = 14;
@@ -169,6 +171,7 @@
             this.badData.Margin = new System.Windows.Forms.Padding(4);
             this.badData.Multiline = true;
             this.badData.Name = "badData";
+            this.badData.ReadOnly = true;
             this.badData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.badData.Size = new System.Drawing.Size(571, 185);
             this.badData.TabIndex = 15;
@@ -215,10 +218,6 @@
             this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
             this.baudRateComboBox.TabIndex = 12;
             // 
-            // serialSettingsBindingSource
-            // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
-            // 
             // stopBitsComboBox
             // 
             this.stopBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "StopBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -261,9 +260,9 @@
             // 
             // tabPageOptions
             // 
+            this.tabPageOptions.Controls.Add(this.checkBoxLogging);
             this.tabPageOptions.Controls.Add(this.buttonSet);
             this.tabPageOptions.Controls.Add(this.textBoxPath);
-            this.tabPageOptions.Controls.Add(this.radioButtonLogging);
             this.tabPageOptions.Location = new System.Drawing.Point(4, 25);
             this.tabPageOptions.Name = "tabPageOptions";
             this.tabPageOptions.Padding = new System.Windows.Forms.Padding(3);
@@ -272,35 +271,37 @@
             this.tabPageOptions.Text = "Options";
             this.tabPageOptions.UseVisualStyleBackColor = true;
             // 
-            // radioButtonLogging
-            // 
-            this.radioButtonLogging.AutoSize = true;
-            this.radioButtonLogging.Checked = true;
-            this.radioButtonLogging.Location = new System.Drawing.Point(6, 41);
-            this.radioButtonLogging.Name = "radioButtonLogging";
-            this.radioButtonLogging.Size = new System.Drawing.Size(128, 21);
-            this.radioButtonLogging.TabIndex = 0;
-            this.radioButtonLogging.TabStop = true;
-            this.radioButtonLogging.Text = "Enable Logging";
-            this.radioButtonLogging.UseVisualStyleBackColor = true;
-            this.radioButtonLogging.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
             // textBoxPath
             // 
             this.textBoxPath.Location = new System.Drawing.Point(6, 13);
             this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(356, 22);
+            this.textBoxPath.Size = new System.Drawing.Size(467, 22);
             this.textBoxPath.TabIndex = 1;
             // 
             // buttonSet
             // 
-            this.buttonSet.Location = new System.Drawing.Point(378, 12);
+            this.buttonSet.Location = new System.Drawing.Point(479, 12);
             this.buttonSet.Name = "buttonSet";
             this.buttonSet.Size = new System.Drawing.Size(75, 23);
             this.buttonSet.TabIndex = 2;
             this.buttonSet.Text = "Set";
             this.buttonSet.UseVisualStyleBackColor = true;
             this.buttonSet.Click += new System.EventHandler(this.buttonSet_Click);
+            // 
+            // checkBoxLogging
+            // 
+            this.checkBoxLogging.AutoSize = true;
+            this.checkBoxLogging.Location = new System.Drawing.Point(10, 42);
+            this.checkBoxLogging.Name = "checkBoxLogging";
+            this.checkBoxLogging.Size = new System.Drawing.Size(129, 21);
+            this.checkBoxLogging.TabIndex = 3;
+            this.checkBoxLogging.Text = "Enable Logging\r\n";
+            this.checkBoxLogging.UseVisualStyleBackColor = true;
+            this.checkBoxLogging.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
             // 
             // MainForm
             // 
@@ -317,9 +318,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,9 +342,9 @@
         private System.Windows.Forms.ComboBox dataBitsComboBox;
         private System.Windows.Forms.ComboBox parityComboBox;
         private System.Windows.Forms.TabPage tabPageOptions;
-        private System.Windows.Forms.RadioButton radioButtonLogging;
         private System.Windows.Forms.Button buttonSet;
         private System.Windows.Forms.TextBox textBoxPath;
+        private System.Windows.Forms.CheckBox checkBoxLogging;
     }
 }
 
