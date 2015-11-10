@@ -43,6 +43,7 @@ namespace SerialPortListener.Serial
         public event EventHandler<SerialDataEventArgs> NewSerialDataRecieved;
         Stopwatch sw = new Stopwatch();
         private long previousTime;
+        private int dataLength;
 
         private bool returnRX;
 
@@ -77,27 +78,39 @@ namespace SerialPortListener.Serial
         
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            sw.Stop();
-
-            //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
-            long result = sw.ElapsedTicks - previousTime;
-            Console.Write(result + "\n");
-           
-
-            if (sw.ElapsedTicks-previousTime > 40000)
+            try
             {
-                returnRX = true;
-            }
-            else
-            {
-                returnRX = false;
-            }
 
-            
-            Thread.Sleep(30); // This is required to allow the buffer time to fill
+                sw.Stop();
 
-          
-                int dataLength = _serialPort.BytesToRead;
+                //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
+                long result = sw.ElapsedTicks - previousTime;
+                Console.Write(result + "\n");
+
+
+                if (sw.ElapsedTicks - previousTime > 40000)
+                {
+                    returnRX = true;
+                }
+                else
+                {
+                    returnRX = false;
+                }
+
+
+                Thread.Sleep(30); // This is required to allow the buffer time to fill
+
+                try
+                {
+                    dataLength = _serialPort.BytesToRead;
+                }
+
+                catch
+                {
+                    dataLength = 0;
+
+
+                }
 
                 byte[] data = new byte[dataLength];
 
@@ -106,16 +119,23 @@ namespace SerialPortListener.Serial
 
                 int nbrDataRead = _serialPort.Read(data, 0, dataLength);
 
+
                 if (nbrDataRead == 0)
                     return;
 
                 // Send data to whom ever interested
                 if (NewSerialDataRecieved != null)
                     NewSerialDataRecieved(this, new SerialDataEventArgs(data));
-         
-            previousTime = sw.ElapsedTicks;
-            sw.Reset();
-            sw.Start();
+
+                previousTime = sw.ElapsedTicks;
+                sw.Reset();
+                sw.Start();
+            }
+
+            catch
+            {
+
+            }
             
         }
 
@@ -153,17 +173,14 @@ namespace SerialPortListener.Serial
         /// </summary>
         public void StopListening()
         {
-            try
+            if (_serialPort.IsOpen)
             {
                 _serialPort.Close();
             }
 
 
-            catch (System.InvalidOperationException err)
-            {
-                Thread.Sleep(50);
-                _serialPort.Close();
-            }
+           
+           
         }
 
 

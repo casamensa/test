@@ -650,14 +650,26 @@ namespace SerialPortListener
 
             replayCount--;
 
-            if (replayCount >= 0)
+            if (replayCount >= 0 && replayCount <= 149)
             {
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
                 
                 replayRX = rxHistory[replayCount+1];
-                decodeModbus(messageHistory[replayCount]);
-                badData.AppendText("\nRX: " + RX.ToString());
+
+                if (messageHistory[replayCount].Length > 4)
+                {
+                    decodeModbus(messageHistory[replayCount]);
+                    badData.AppendText("\nRX: " + RX.ToString());
+                }
+                else
+                {
+                    buttonBack.Enabled = false;
+                    tbData.Text = "End of replay data";
+                    tbDataRx.Text = "";
+                    replayCount++;
+                }
+                
                 
             }
             else
@@ -671,15 +683,26 @@ namespace SerialPortListener
         private void buttonForward_Click(object sender, EventArgs e)
         {
             replayCount++;
+            buttonBack.Enabled = true;
 
-            if (replayCount <= 149)
+            if (replayCount <= 149 && replayCount >= 0)
             {
                
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
                 replayRX = rxHistory[replayCount-1];
-                decodeModbus(messageHistory[replayCount]);
-                badData.AppendText("\nRX: " + RX.ToString());
+
+                if (messageHistory[replayCount].Length > 4)
+                {
+                    decodeModbus(messageHistory[replayCount]);
+                    badData.AppendText("\nRX: " + RX.ToString());
+                }
+                else
+                {
+                    buttonForward.Enabled = false;
+                    tbData.Text = "End of replay data";
+                    tbDataRx.Text = "";
+                }
 
             }
             else
