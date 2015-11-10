@@ -516,9 +516,10 @@ namespace SerialPortListener
 
             for (int i= binary.Length-1;i>=0;i--)
             {
-                if (coilCount >= low && coilCount <= high)
+                if (coilCount >= low+8 && coilCount <= high+8)
                 {
-                    richTextBoxCoils.AppendText(coilCount.ToString() + ": " + binary[i] + "\t");
+                    int modifiedCount = coilCount - 8;
+                    richTextBoxCoils.AppendText(modifiedCount.ToString() + ": " + binary[i] + "\t");
                 }
                 //richTextBoxCoils.AppendText("\n");
                 coilCount++;
