@@ -38,6 +38,7 @@ namespace SerialPortListener
         int rxCRC2 = 0;
         int messageHistoryCount;
         int replayCount;
+        int coilCount = 1;
 
         bool response;
         bool replay = false;
@@ -99,6 +100,8 @@ namespace SerialPortListener
 
             sb.Clear();
             outText.Clear();
+            coilCount = 1;
+            
 
 
 
@@ -436,6 +439,8 @@ namespace SerialPortListener
 
                     string binary = Convert.ToString(numberHigh, 2).PadLeft(8,'0');
 
+                    
+
                     if (i == 2)
                     {
                         tbDataRx.AppendText("No. Bytes: ");
@@ -447,6 +452,12 @@ namespace SerialPortListener
                     {
                         tbDataRx.AppendText("Data: ");
                         tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+
+                        if (returnCode == "Read Coil Status ")
+                        {
+                            updateCoils(binary);
+                        }
+                        
                     }
                     outText.Append("Data: " + numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
@@ -466,6 +477,47 @@ namespace SerialPortListener
                 writeToFile(sb);
             }
 
+        }
+
+        private void updateCoils(string binary)
+        {
+            if (coilCount <= 1)
+            {
+                richTextBoxCoils.Text = "";
+            }
+            int low;
+            int high;
+
+            try
+            {
+                low = Int32.Parse(textBoxCoilLow.Text);
+            }
+            catch
+            {
+                low = 1;
+            }
+
+            try
+            {
+                high = Int32.Parse(textBoxCoilHigh.Text);
+            }
+
+            catch
+            {
+                high = 254;
+            }
+
+            for (int i= binary.Length-1;i>=0;i--)
+            {
+                if (coilCount >= low && coilCount <= high)
+                {
+                    richTextBoxCoils.AppendText(coilCount.ToString() + ": " + binary[i] + "\t");
+                }
+                //richTextBoxCoils.AppendText("\n");
+                coilCount++;
+            }
+
+            
         }
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
@@ -718,6 +770,77 @@ namespace SerialPortListener
                 replayCount = 0;
             }
 
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+            restrictInput(sender);
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+            restrictInput(sender);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            restrictInput(sender);
+        }
+
+        private void tabPageRanges_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void restrictInput(object sender)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var text = textBox.Text;
+            var output = new StringBuilder();
+            //use this boolean to determine if the dot already exists
+            //in the text so far.
+            var dotEncountered = false;
+            //loop through all of the text
+            for (int i = 0; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (char.IsDigit(c))
+                {
+                    //append any digit.
+                    output.Append(c);
+                }
+                else if (!dotEncountered && c == '.')
+                {
+                    //append the first dot encountered
+                    output.Append(c);
+                    dotEncountered = true;
+                }
+            }
+            var newText = output.ToString();
+            textBox.Text = newText;
+            //set the caret to the end of text
+            //textBox.CaretIndex = newText.Length;
+           
+        }
+
+        private void textBoxCoilHigh_TextChanged(object sender, EventArgs e)
+        {
+
+            restrictInput(sender);
         }
     }
 }
