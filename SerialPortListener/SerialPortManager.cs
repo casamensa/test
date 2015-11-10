@@ -78,12 +78,13 @@ namespace SerialPortListener.Serial
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             sw.Stop();
-  
-            Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
-            Console.Write(sw.ElapsedTicks.ToString() + "\n");
+
+            //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
+            long result = sw.ElapsedTicks - previousTime;
+            Console.Write(result + "\n");
            
 
-            if (sw.ElapsedMilliseconds>previousTime)
+            if (sw.ElapsedTicks-previousTime > 40000)
             {
                 returnRX = true;
             }
@@ -117,7 +118,7 @@ namespace SerialPortListener.Serial
             {
                 MessageBox.Show("Error in Serial"+err.ToString());
             }
-            previousTime = sw.ElapsedMilliseconds;
+            previousTime = sw.ElapsedTicks;
             sw.Reset();
             sw.Start();
             
