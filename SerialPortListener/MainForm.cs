@@ -9,12 +9,15 @@ using System.Windows.Forms;
 using SerialPortListener.Serial;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SerialPortListener
 {
     public partial class MainForm : Form
     {
         SerialPortManager _spManager;
+
+        Stopwatch sw = new Stopwatch();
 
         string returnCode;
         string previousSlaveId = "999";
@@ -73,6 +76,8 @@ namespace SerialPortListener
 
         void _spManager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
         {
+            
+            
             if (this.InvokeRequired)
             {
                 // Using this.Invoke causes deadlock when closing serial port, and BeginInvoke is good practice anyway.
@@ -103,14 +108,16 @@ namespace SerialPortListener
             }
             else // CRC check has failed then do this
             {
-                badData.Font = new Font("Serif", 10, FontStyle.Bold);
+                badData.Font = new Font("Serif", 12, FontStyle.Bold);
                 badData.AppendText("Error Detected \n");
-                badData.Font = new Font("Serif", 8, FontStyle.Regular);
+                badData.Font = new Font("Serif", 12, FontStyle.Regular);
                 decodeModbus(sb);
             
             }
 
             serialCount++;
+
+           
         }
 
         private void decodeModbus(StringBuilder sb)
@@ -127,7 +134,7 @@ namespace SerialPortListener
 
             string[] words = sb.ToString().Split(' ');
 
-            if (words[1]!=previousFunctionCode)
+            if (_spManager.getRX())
             {
                
                 RX = true;
@@ -160,12 +167,12 @@ namespace SerialPortListener
                             outText.Append("Bad Data - Check Polarity \n");
                         }
 
-                        else if (previousSlaveId == words[i])
+                        else if (RX)
                         {
-                            RX = true;
+                            
 
                             tbDataRx.Text = ("Slave Response \n");
-                            int value = Convert.ToInt32(previousSlaveId, 16);
+                            int value = Convert.ToInt32(words[i], 16);
                             tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
                             tbDataRx.AppendText("Calculated CRC: " + response + "\n");
                             previousSlaveId = " ";
@@ -177,7 +184,7 @@ namespace SerialPortListener
                         }
                         else
                         {
-                            RX = false;
+                            
                             tbData.Text = ("Master Request \n");
                             previousSlaveId = words[i];
                             tbData.AppendText("Slave Address: ");
@@ -322,8 +329,8 @@ namespace SerialPortListener
                             range = (numberHigh * 256) + (numberLow);
                             endAddress = startAddress + range;
 
-                            tbData.AppendText("\n Start of Data : " + startAddress + "\n");
-                            tbData.AppendText("\n End of Data : " + endAddress + "\n");
+                            tbData.AppendText("Start of Data : " + startAddress + "\n");
+                            tbData.AppendText("End of Data : " + endAddress + "\n");
 
 
                             outText.Append("Number Low: "+ numberLow.ToString() + "\n");

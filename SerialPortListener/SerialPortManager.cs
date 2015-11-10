@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SerialPortListener.Serial
 {
@@ -25,6 +26,7 @@ namespace SerialPortListener.Serial
             // If serial ports is found, we select the first found
             if (_currentSerialSettings.PortNameCollection.Length > 0)
                 _currentSerialSettings.PortName = _currentSerialSettings.PortNameCollection[0];
+            sw.Start();
         }
 
         
@@ -38,7 +40,11 @@ namespace SerialPortListener.Serial
         private SerialPort _serialPort;
         private SerialSettings _currentSerialSettings = new SerialSettings();
         private string _latestRecieved = String.Empty;
-        public event EventHandler<SerialDataEventArgs> NewSerialDataRecieved; 
+        public event EventHandler<SerialDataEventArgs> NewSerialDataRecieved;
+        Stopwatch sw = new Stopwatch();
+        private long previousTime;
+
+        private bool returnRX;
 
         #endregion
 
@@ -50,6 +56,11 @@ namespace SerialPortListener.Serial
         {
             get { return _currentSerialSettings; }
             set { _currentSerialSettings = value; }
+        }
+
+        public bool getRX()
+        {
+            return returnRX;
         }
 
         #endregion
@@ -66,6 +77,22 @@ namespace SerialPortListener.Serial
         
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            sw.Stop();
+  
+            Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
+            Console.Write(sw.ElapsedTicks.ToString() + "\n");
+           
+
+            if (sw.ElapsedMilliseconds>previousTime)
+            {
+                returnRX = true;
+            }
+            else
+            {
+                returnRX = false;
+            }
+
+            
             Thread.Sleep(50); // This is required to allow the buffer time to fill
 
             try
@@ -90,6 +117,10 @@ namespace SerialPortListener.Serial
             {
                 MessageBox.Show("Error in Serial"+err.ToString());
             }
+            previousTime = sw.ElapsedMilliseconds;
+            sw.Reset();
+            sw.Start();
+            
         }
 
         #endregion
