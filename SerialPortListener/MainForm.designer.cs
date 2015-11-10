@@ -41,8 +41,10 @@
             this.badData = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
+            this.buttonForward = new System.Windows.Forms.Button();
             this.buttonBack = new System.Windows.Forms.Button();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
@@ -51,8 +53,6 @@
             this.checkBoxLogging = new System.Windows.Forms.CheckBox();
             this.buttonSet = new System.Windows.Forms.Button();
             this.textBoxPath = new System.Windows.Forms.TextBox();
-            this.buttonForward = new System.Windows.Forms.Button();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
             dataBitsLabel = new System.Windows.Forms.Label();
@@ -60,8 +60,8 @@
             parityLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageSerial.SuspendLayout();
-            this.tabPageOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
+            this.tabPageOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // baudRateLabel
@@ -130,7 +130,7 @@
             this.tbData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbData.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbData.Location = new System.Drawing.Point(13, 226);
             this.tbData.Margin = new System.Windows.Forms.Padding(4);
             this.tbData.Multiline = true;
@@ -156,7 +156,7 @@
             this.tbDataRx.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDataRx.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbDataRx.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbDataRx.Location = new System.Drawing.Point(510, 227);
             this.tbDataRx.Margin = new System.Windows.Forms.Padding(4);
             this.tbDataRx.Multiline = true;
@@ -171,7 +171,7 @@
             this.badData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.badData.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.badData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.badData.Location = new System.Drawing.Point(510, 38);
             this.badData.Margin = new System.Windows.Forms.Padding(4);
             this.badData.Multiline = true;
@@ -215,6 +215,16 @@
             this.tabPageSerial.Text = "Serial Settings";
             this.tabPageSerial.UseVisualStyleBackColor = true;
             // 
+            // buttonForward
+            // 
+            this.buttonForward.Location = new System.Drawing.Point(293, 106);
+            this.buttonForward.Name = "buttonForward";
+            this.buttonForward.Size = new System.Drawing.Size(113, 28);
+            this.buttonForward.TabIndex = 22;
+            this.buttonForward.Text = "Step Forward";
+            this.buttonForward.UseVisualStyleBackColor = true;
+            this.buttonForward.Click += new System.EventHandler(this.buttonForward_Click);
+            // 
             // buttonBack
             // 
             this.buttonBack.Location = new System.Drawing.Point(293, 145);
@@ -234,6 +244,10 @@
             this.baudRateComboBox.Name = "baudRateComboBox";
             this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
             this.baudRateComboBox.TabIndex = 12;
+            // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
             // 
             // stopBitsComboBox
             // 
@@ -316,20 +330,6 @@
             this.textBoxPath.Size = new System.Drawing.Size(467, 22);
             this.textBoxPath.TabIndex = 1;
             // 
-            // buttonForward
-            // 
-            this.buttonForward.Location = new System.Drawing.Point(293, 106);
-            this.buttonForward.Name = "buttonForward";
-            this.buttonForward.Size = new System.Drawing.Size(113, 28);
-            this.buttonForward.TabIndex = 22;
-            this.buttonForward.Text = "Step Forward";
-            this.buttonForward.UseVisualStyleBackColor = true;
-            this.buttonForward.Click += new System.EventHandler(this.buttonForward_Click);
-            // 
-            // serialSettingsBindingSource
-            // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -345,9 +345,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -136,9 +136,9 @@ namespace SerialPortListener
             }
             else // CRC check has failed then do this
             {
-                badData.Font = new Font("Serif", 12, FontStyle.Bold);
+                badData.Font = new Font("Serif", 10, FontStyle.Bold);
                 badData.AppendText("Error Detected \n");
-                badData.Font = new Font("Serif", 12, FontStyle.Regular);
+                badData.Font = new Font("Serif", 10, FontStyle.Regular);
                 decodeModbus(sb);
 
             }
@@ -217,11 +217,11 @@ namespace SerialPortListener
 
                             if (response)
                             {
-                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n");
+                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" +Environment.NewLine+Environment.NewLine);
                             }
                             else
                             {
-                                tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n");
+                                tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
 
                         }
@@ -240,11 +240,11 @@ namespace SerialPortListener
 
                             if (response)
                             {
-                                tbData.AppendText("Calculated CRC: Checksum Valid" + "\n");
+                                tbData.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
-                                tbData.AppendText("Calculated CRC: Error in Checksum" + "\n");
+                                tbData.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
 
                         }
@@ -257,12 +257,12 @@ namespace SerialPortListener
                         getFunctionCode(words[i]);
                         if (RX)
                         {
-                            tbDataRx.AppendText(returnCode + "\n");
+                            tbDataRx.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             outText.Append(returnCode + "\n");
                         }
                         else
                         {
-                            tbData.AppendText(returnCode + "\n");
+                            tbData.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             outText.Append(returnCode + "\n");
                         }
 
@@ -440,6 +440,8 @@ namespace SerialPortListener
                     {
                         tbDataRx.AppendText("No. Bytes: ");
                         tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                        outText.Append("No. Bytes: ");
+                        outText.Append(numberHigh.ToString() + "\n");
                     }
                     else
                     {
