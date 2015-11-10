@@ -341,7 +341,7 @@
             this.Controls.Add(this.tbData);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
-            this.Text = "Modbus Mon";
+            this.Text = "Modbus Monitor";
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();

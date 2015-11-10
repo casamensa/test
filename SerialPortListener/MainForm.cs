@@ -209,12 +209,20 @@ namespace SerialPortListener
                             tbDataRx.Text = ("Slave Response \n");
                             int value = Convert.ToInt32(words[i], 16);
                             tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
-                            tbDataRx.AppendText("Calculated CRC: " + response + "\n");
+                            //tbDataRx.AppendText("Calculated CRC: " + response + "\n");
                             previousSlaveId = " ";
 
                             outText.Append("Slave Response \n");
                             outText.Append("Slave Address:" + value.ToString() + "\n");
-                            outText.Append("Calculated CRC: " + response + "\n");
+
+                            if (response)
+                            {
+                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n");
+                            }
+                            else
+                            {
+                                tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n");
+                            }
 
                         }
                         else
@@ -225,11 +233,19 @@ namespace SerialPortListener
                             tbData.AppendText("Slave Address: ");
                             int value = Convert.ToInt32(words[i], 16);
                             tbData.AppendText(value.ToString() + "\n");
-                            tbData.AppendText("Calculated CRC: " + response + "\n");
+                            //tbData.AppendText("Calculated CRC: " + response + "\n");
 
                             outText.Append("Master Request \n");
                             outText.Append("Slave Address:" + value.ToString() + "\n");
-                            outText.Append("Calculated CRC: " + response + "\n");
+
+                            if (response)
+                            {
+                                tbData.AppendText("Calculated CRC: Checksum Valid" + "\n");
+                            }
+                            else
+                            {
+                                tbData.AppendText("Calculated CRC: Error in Checksum" + "\n");
+                            }
 
                         }
 
@@ -418,12 +434,13 @@ namespace SerialPortListener
                         numberHigh = 999;
                     }
 
-                    string binary = Convert.ToString(numberHigh, 2);
+                    string binary = Convert.ToString(numberHigh, 2).PadLeft(8,'0');
+                    
 
                     tbDataRx.AppendText("Data: ");
-                    tbDataRx.AppendText(numberHigh.ToString() + "  Binary: " + binary + "\n");
+                    tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
-                    outText.Append("Data: " + numberHigh.ToString() + "  Binary: " + binary + "\n");
+                    outText.Append("Data: " + numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
                 }
 

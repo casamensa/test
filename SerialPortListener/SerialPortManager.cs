@@ -94,10 +94,9 @@ namespace SerialPortListener.Serial
             }
 
             
-            Thread.Sleep(50); // This is required to allow the buffer time to fill
+            Thread.Sleep(30); // This is required to allow the buffer time to fill
 
-            try
-            {
+          
                 int dataLength = _serialPort.BytesToRead;
 
                 byte[] data = new byte[dataLength];
@@ -113,11 +112,7 @@ namespace SerialPortListener.Serial
                 // Send data to whom ever interested
                 if (NewSerialDataRecieved != null)
                     NewSerialDataRecieved(this, new SerialDataEventArgs(data));
-            }
-            catch (System.InvalidOperationException err)
-            {
-                MessageBox.Show("Error in Serial"+err.ToString());
-            }
+         
             previousTime = sw.ElapsedTicks;
             sw.Reset();
             sw.Start();
@@ -158,7 +153,17 @@ namespace SerialPortListener.Serial
         /// </summary>
         public void StopListening()
         {
-            _serialPort.Close();
+            try
+            {
+                _serialPort.Close();
+            }
+
+
+            catch (System.InvalidOperationException err)
+            {
+                Thread.Sleep(50);
+                _serialPort.Close();
+            }
         }
 
 
