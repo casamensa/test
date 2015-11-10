@@ -100,7 +100,7 @@ namespace SerialPortListener
 
             sb.Clear();
             outText.Clear();
-            coilCount = 1;
+            
             
 
 
@@ -162,6 +162,8 @@ namespace SerialPortListener
             int startAddress = 0;
             int range = 0;
             int endAddress = 0;
+
+            coilCount = 1;
 
             string[] words = sb.ToString().Split(' ');
 
@@ -453,12 +455,17 @@ namespace SerialPortListener
                         tbDataRx.AppendText("Data: ");
                         tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
-                        if (returnCode == "Read Coil Status ")
-                        {
-                            updateCoils(binary);
-                        }
-                        
+                       
                     }
+
+                    if (returnCode == "Read Coil Status " && RX)
+                    {
+                        numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        string coilBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
+                        updateCoils(coilBinary);
+                    }
+
+
                     outText.Append("Data: " + numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
                 }
