@@ -423,7 +423,7 @@ namespace SerialPortListener
                     }
                 }
 
-                if (RX && i >= 3 && i < words.Length - 3)
+                if (RX && i >= 2 && i < words.Length - 3)
                 {
                     try
                     {
@@ -435,11 +435,17 @@ namespace SerialPortListener
                     }
 
                     string binary = Convert.ToString(numberHigh, 2).PadLeft(8,'0');
-                    
 
-                    tbDataRx.AppendText("Data: ");
-                    tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
-
+                    if (i == 2)
+                    {
+                        tbDataRx.AppendText("No. Bytes: ");
+                        tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                    }
+                    else
+                    {
+                        tbDataRx.AppendText("Data: ");
+                        tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+                    }
                     outText.Append("Data: " + numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
                 }
