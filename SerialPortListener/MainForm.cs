@@ -27,10 +27,16 @@ namespace SerialPortListener
         StringBuilder previousMessage = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         StringBuilder outText = new StringBuilder();
-      
+
+       
+        StringBuilder[] messageHistory = new StringBuilder[150];
+        
+
         int serialCount = 0;
         int rxCRC1 = 0;
         int rxCRC2 = 0;
+        int messageHistoryCount;
+        int replayCount;
 
         bool response;
         
@@ -40,6 +46,8 @@ namespace SerialPortListener
         {
             InitializeComponent();
 
+            for (int i = 0; i < messageHistory.Length; i++)
+                messageHistory[i] = new StringBuilder();
 
             UserInitialization();
 
@@ -99,6 +107,20 @@ namespace SerialPortListener
            
 
             response = CheckResponse(e.Data);
+
+            if (messageHistoryCount < 149)
+            {
+                //badData.AppendText("stored: " + sb.ToString());
+                messageHistory[messageHistoryCount].Append(sb.ToString());
+                messageHistoryCount++;
+
+               
+            }
+            else
+            {
+                messageHistoryCount = 0;
+            }
+
 
            
 
@@ -533,6 +555,9 @@ namespace SerialPortListener
         {
             btnStart.Enabled = false;
             btnStop.Enabled = true;
+            buttonBack.Enabled = false;
+            buttonForward.Enabled = false;
+
             serialCount = 0;
             _spManager.StartListening();
         }
@@ -542,6 +567,10 @@ namespace SerialPortListener
         {
             btnStart.Enabled = true;
             btnStop.Enabled = false;
+            buttonBack.Enabled = true;
+            buttonForward.Enabled = true;
+
+            replayCount = messageHistoryCount;
             sb.Clear();
             previousFunctionCode = "999";
             
@@ -578,6 +607,52 @@ namespace SerialPortListener
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try {
+                if (replayCount >= 0)
+                {
+                    tbData.Text = replayCount.ToString();
+                    badData.Text = messageHistory[replayCount].ToString();
+                    //decodeModbus(messageHistory[replayCount]);
+                    replayCount--;
+                }
+                else
+                {
+                    replayCount = 149;
+                }
+            }
+            catch
+            {
+                tbData.Text = "End of recorded data";
+            }
+            
+            
+        }
+
+        private void buttonForward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (replayCount <= 149)
+                {
+                    replayCount++;
+                    tbData.Text = replayCount.ToString();
+                    badData.Text = messageHistory[replayCount].ToString();
+                    //decodeModbus(messageHistory[replayCount]);
+                   
+                }
+                else
+                {
+                    replayCount = 0;
+                }
+            }
+            catch
+            {
+                tbData.Text = "End of recorded data";
+            }
         }
     }
 }

@@ -41,15 +41,17 @@
             this.badData = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
+            this.buttonBack = new System.Windows.Forms.Button();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
             this.parityComboBox = new System.Windows.Forms.ComboBox();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
-            this.textBoxPath = new System.Windows.Forms.TextBox();
-            this.buttonSet = new System.Windows.Forms.Button();
             this.checkBoxLogging = new System.Windows.Forms.CheckBox();
+            this.buttonSet = new System.Windows.Forms.Button();
+            this.textBoxPath = new System.Windows.Forms.TextBox();
+            this.buttonForward = new System.Windows.Forms.Button();
             this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
@@ -191,6 +193,8 @@
             // 
             // tabPageSerial
             // 
+            this.tabPageSerial.Controls.Add(this.buttonForward);
+            this.tabPageSerial.Controls.Add(this.buttonBack);
             this.tabPageSerial.Controls.Add(this.baudRateComboBox);
             this.tabPageSerial.Controls.Add(baudRateLabel);
             this.tabPageSerial.Controls.Add(this.stopBitsComboBox);
@@ -210,6 +214,16 @@
             this.tabPageSerial.TabIndex = 0;
             this.tabPageSerial.Text = "Serial Settings";
             this.tabPageSerial.UseVisualStyleBackColor = true;
+            // 
+            // buttonBack
+            // 
+            this.buttonBack.Location = new System.Drawing.Point(293, 145);
+            this.buttonBack.Name = "buttonBack";
+            this.buttonBack.Size = new System.Drawing.Size(113, 28);
+            this.buttonBack.TabIndex = 21;
+            this.buttonBack.Text = "Step Back";
+            this.buttonBack.UseVisualStyleBackColor = true;
+            this.buttonBack.Click += new System.EventHandler(this.button1_Click);
             // 
             // baudRateComboBox
             // 
@@ -274,12 +288,16 @@
             this.tabPageOptions.Text = "Options";
             this.tabPageOptions.UseVisualStyleBackColor = true;
             // 
-            // textBoxPath
+            // checkBoxLogging
             // 
-            this.textBoxPath.Location = new System.Drawing.Point(6, 13);
-            this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(467, 22);
-            this.textBoxPath.TabIndex = 1;
+            this.checkBoxLogging.AutoSize = true;
+            this.checkBoxLogging.Location = new System.Drawing.Point(10, 42);
+            this.checkBoxLogging.Name = "checkBoxLogging";
+            this.checkBoxLogging.Size = new System.Drawing.Size(129, 21);
+            this.checkBoxLogging.TabIndex = 3;
+            this.checkBoxLogging.Text = "Enable Logging\r\n";
+            this.checkBoxLogging.UseVisualStyleBackColor = true;
+            this.checkBoxLogging.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // buttonSet
             // 
@@ -291,16 +309,22 @@
             this.buttonSet.UseVisualStyleBackColor = true;
             this.buttonSet.Click += new System.EventHandler(this.buttonSet_Click);
             // 
-            // checkBoxLogging
+            // textBoxPath
             // 
-            this.checkBoxLogging.AutoSize = true;
-            this.checkBoxLogging.Location = new System.Drawing.Point(10, 42);
-            this.checkBoxLogging.Name = "checkBoxLogging";
-            this.checkBoxLogging.Size = new System.Drawing.Size(129, 21);
-            this.checkBoxLogging.TabIndex = 3;
-            this.checkBoxLogging.Text = "Enable Logging\r\n";
-            this.checkBoxLogging.UseVisualStyleBackColor = true;
-            this.checkBoxLogging.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.textBoxPath.Location = new System.Drawing.Point(6, 13);
+            this.textBoxPath.Name = "textBoxPath";
+            this.textBoxPath.Size = new System.Drawing.Size(467, 22);
+            this.textBoxPath.TabIndex = 1;
+            // 
+            // buttonForward
+            // 
+            this.buttonForward.Location = new System.Drawing.Point(293, 106);
+            this.buttonForward.Name = "buttonForward";
+            this.buttonForward.Size = new System.Drawing.Size(113, 28);
+            this.buttonForward.TabIndex = 22;
+            this.buttonForward.Text = "Step Forward";
+            this.buttonForward.UseVisualStyleBackColor = true;
+            this.buttonForward.Click += new System.EventHandler(this.buttonForward_Click);
             // 
             // serialSettingsBindingSource
             // 
@@ -348,6 +372,8 @@
         private System.Windows.Forms.Button buttonSet;
         private System.Windows.Forms.TextBox textBoxPath;
         private System.Windows.Forms.CheckBox checkBoxLogging;
+        private System.Windows.Forms.Button buttonBack;
+        private System.Windows.Forms.Button buttonForward;
     }
 }
 
