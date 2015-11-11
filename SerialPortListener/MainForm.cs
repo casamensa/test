@@ -30,6 +30,7 @@ namespace SerialPortListener
 
 
         StringBuilder[] messageHistory = new StringBuilder[150];
+
         bool[] rxHistory = new bool[150];
 
 
@@ -119,6 +120,8 @@ namespace SerialPortListener
             {
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
+                Console.Write("Count: " + messageHistoryCount.ToString() + "\n");
+                Console.Write("Message stored: " + messageHistory[messageHistoryCount].ToString() );
                 rxHistory[messageHistoryCount] = RX;
                 messageHistoryCount++;
 
@@ -127,12 +130,15 @@ namespace SerialPortListener
             }
             else
             {
+                for (int i = 0;i< messageHistory.Length;i++)
+                {
+                    messageHistory[i].Clear();
+                }
                 messageHistoryCount = 0;
+                
             }
 
-
-
-
+            
             if (response && serialCount > 4)
             {
                 decodeModbus(sb);
@@ -147,8 +153,7 @@ namespace SerialPortListener
             }
 
             serialCount++;
-
-
+            
         }
 
         private void decodeModbus(StringBuilder sb)
