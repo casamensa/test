@@ -85,10 +85,10 @@ namespace SerialPortListener.Serial
 
                 //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
                 long result = sw.ElapsedTicks - previousTime;
-                Console.Write(result + "\n");
+               // Console.Write(result + "\n");
 
-
-                if (sw.ElapsedTicks - previousTime > 40000)
+                Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
+                if (sw.ElapsedTicks - previousTime > 10000)
                 {
                     returnRX = true;
                 }
@@ -98,7 +98,7 @@ namespace SerialPortListener.Serial
                 }
 
 
-                Thread.Sleep(30); // This is required to allow the buffer time to fill
+                Thread.Sleep(50); // This is required to allow the buffer time to fill
 
                 try
                 {

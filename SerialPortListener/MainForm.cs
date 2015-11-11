@@ -27,9 +27,17 @@ namespace SerialPortListener
         StringBuilder previousMessage = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         StringBuilder outText = new StringBuilder();
+        StringBuilder holdingRegisterText = new StringBuilder();
+
+        StringBuilder tbDataSB = new StringBuilder();
+        StringBuilder tbDataRXSB = new StringBuilder();
+        StringBuilder badDataSB = new StringBuilder();
 
 
         StringBuilder[] messageHistory = new StringBuilder[150];
+
+        
+        Thread holdingThread = new Thread(new ThreadStart(WorkThreadFunction));
 
         bool[] rxHistory = new bool[150];
 
@@ -89,6 +97,25 @@ namespace SerialPortListener
 
         }
 
+        public static void WorkThreadFunction()
+        {
+            try
+            {
+                // do any background work
+            }
+            catch (Exception ex)
+            {
+                // log errors
+            }
+        }
+
+        private void updateGUI()
+        {
+            tbData.Text = tbDataSB.ToString();
+            tbDataRx.Text = tbDataRXSB.ToString();
+            badData.Text = badDataSB.ToString();
+        }
+
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -108,11 +135,12 @@ namespace SerialPortListener
 
             sb.Clear();
             outText.Clear();
+            holdingRegisterText.Clear();
 
-
-
-
-
+            tbDataRXSB.Clear();
+            tbDataSB.Clear();
+            badDataSB.Clear();
+            
             //StringBuilder sb = new StringBuilder(); // Now declared fo full scope
 
             for (int i = 0; i < e.Data.Length; i++)
@@ -127,8 +155,7 @@ namespace SerialPortListener
             {
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
-                Console.Write("Count: " + messageHistoryCount.ToString() + "\n");
-                Console.Write("Message stored: " + messageHistory[messageHistoryCount].ToString());
+                
                 rxHistory[messageHistoryCount] = RX;
                 messageHistoryCount++;
 
@@ -149,6 +176,10 @@ namespace SerialPortListener
             if (response && serialCount > 4)
             {
                 decodeModbus(sb);
+                
+                //Thread thread = new Thread(() => decodeModbus(sb));
+               
+                //thread.Start();
             }
             else // CRC check has failed then do this
             {
@@ -480,9 +511,10 @@ namespace SerialPortListener
 
                     if (returnCode == "Read Holding Registers " && RX)
                     {
-                        numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
-                        //string holdingBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
-                        updateHoldingRegister(numberHigh.ToString());
+                       // Thread thread = new Thread(() => updateHoldingRegister(sb.ToString()));
+                        //thread.Start();
+
+                       // updateHoldingRegister(sb.ToString());
 
                     }
 
@@ -551,9 +583,15 @@ namespace SerialPortListener
 
         private void updateHoldingRegister(string decimalValue)
         {
+           string test = decimalValue.Replace(" \n", string.Empty);
+            if (test.Length > 16)
+            {
+                test = test.Substring(6, (test.Length - 8));
+            }
+
             if (holdingRegisterCount <= 1)
             {
-                richTextBoxHoldingRegister.Text = "";
+                //richTextBoxHoldingRegister.Text = "";
             }
             int low;
             int high;
@@ -578,18 +616,37 @@ namespace SerialPortListener
             }
 
 
-
-            if (holdingRegisterCount >= low + 2 && holdingRegisterCount <= high + 2)
+            //int modifiedCount = holdingRegisterCount - 1;
+            //string newString = test.Substring(i, 4);
+            int count = 1;
+            for(int i = 0;i<test.Length-1;i=i+4)
             {
-                int modifiedCount = holdingRegisterCount - 2;
-                richTextBoxHoldingRegister.AppendText(modifiedCount.ToString() + ": " + decimalValue + "\t");
-            }
-            //richTextBoxCoils.AppendText("\n");
+                try {
+                    string test2 = Int32.Parse(test.Substring(i, 4), System.Globalization.NumberStyles.HexNumber).ToString();
+                    if (i == 0)
+                    {
+                        richTextBoxHoldingRegister.Text=(count.ToString()+": "+test2 + "\t");
+                    }
+                    else
+                    {
+                        richTextBoxHoldingRegister.AppendText(count.ToString() + ": " + test2 + "\t");
+                    }
+                }
+                catch
+                {
 
+                }
+                count++;
+            }
+            
+            
             holdingRegisterCount++;
 
 
+
         }
+
+       
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
         {
