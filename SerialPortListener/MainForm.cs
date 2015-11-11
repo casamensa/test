@@ -176,10 +176,11 @@ namespace SerialPortListener
             if (response && serialCount > 4)
             {
                 decodeModbus(sb);
-                
+
                 //Thread thread = new Thread(() => decodeModbus(sb));
-               
+
                 //thread.Start();
+                updateGUI();
             }
             else // CRC check has failed then do this
             {
@@ -187,7 +188,7 @@ namespace SerialPortListener
                 badData.AppendText("Error Detected \n");
                 badData.Font = new Font("Serif", 10, FontStyle.Regular);
                 decodeModbus(sb);
-
+                updateGUI();
             }
 
             serialCount++;
@@ -229,7 +230,7 @@ namespace SerialPortListener
                 RX = replayRX;
             }
 
-            //tbDataRx.AppendText(rxData.ToString());
+           
 
             rxCRC1 = words.Length - 3;
             rxCRC2 = words.Length - 2;
@@ -245,9 +246,14 @@ namespace SerialPortListener
 
                         if (Convert.ToInt32(words[i], 16) == 136)
                         {
-                            tbData.Text = ("Bad Data - Check Polarity");
-                            tbDataRx.Text = ("Bad Data - Check Polarity");
-                            badData.Text = ("Bad Data - Check Polarity");
+                            // tbData.Text = ("Bad Data - Check Polarity");
+                            //tbDataRx.Text = ("Bad Data - Check Polarity");
+                            // badData.Text = ("Bad Data - Check Polarity");
+
+                            tbDataSB.Append("Bad Data - Check Polarity");
+                            tbDataRXSB.Append("Bad Data - Check Polarity");
+                            badDataSB.Append("Bad Data - Check Polarity");
+                            
                             outText.Append("Bad Data - Check Polarity \n");
                         }
 
@@ -255,10 +261,13 @@ namespace SerialPortListener
                         {
 
 
-                            tbDataRx.Text = ("Slave Response \n");
+                            //tbDataRx.Text = ("Slave Response \n");
+                            tbDataRXSB.Append("Slave Response \n");
                             int value = Convert.ToInt32(words[i], 16);
-                            tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
-                            //tbDataRx.AppendText("Calculated CRC: " + response + "\n");
+
+                            //tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
+                            tbDataRXSB.Append("Slave Address:" + value.ToString() + "\n");
+                            
                             previousSlaveId = " ";
 
                             outText.Append("Slave Response \n");
@@ -266,34 +275,46 @@ namespace SerialPortListener
 
                             if (response)
                             {
-                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                //tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataRXSB.Append("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
-                                tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                //tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataRXSB.Append("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+
                             }
 
                         }
                         else
                         {
 
-                            tbData.Text = ("Master Request \n");
+                            //tbData.Text = ("Master Request \n");
+                            tbDataSB.Append("Master Request \n");
+
                             previousSlaveId = words[i];
-                            tbData.AppendText("Slave Address: ");
+
+                            //tbData.AppendText("Slave Address: ");
+                            tbDataSB.Append("Slave Address: ");
+
                             int value = Convert.ToInt32(words[i], 16);
-                            tbData.AppendText(value.ToString() + "\n");
-                            //tbData.AppendText("Calculated CRC: " + response + "\n");
+
+                            //tbData.AppendText(value.ToString() + "\n");
+                            tbDataSB.Append(value.ToString() + "\n");
+                           
 
                             outText.Append("Master Request \n");
                             outText.Append("Slave Address:" + value.ToString() + "\n");
 
                             if (response)
                             {
-                                tbData.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                //tbData.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataSB.Append("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
-                                tbData.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                //tbData.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataSB.Append("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
 
                         }
@@ -306,12 +327,14 @@ namespace SerialPortListener
                         getFunctionCode(words[i]);
                         if (RX)
                         {
-                            tbDataRx.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
+                            //tbDataRx.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
+                            tbDataRXSB.Append(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             outText.Append(returnCode + "\n");
                         }
                         else
                         {
-                            tbData.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
+                            //tbData.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
+                            tbDataSB.Append(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             outText.Append(returnCode + "\n");
                         }
 
@@ -328,13 +351,15 @@ namespace SerialPortListener
                         }
                         if (RX)
                         {
-                            //tbDataRx.AppendText("Data High: ");
-                            //tbDataRx.AppendText(startAddressHigh.ToString() + "\n");
+                            
                         }
                         else
                         {
-                            tbData.AppendText("Start Address High: ");
-                            tbData.AppendText(startAddressHigh.ToString() + "\n");
+                            //tbData.AppendText("Start Address High: ");
+                            tbDataSB.Append("Start Address High: ");
+
+                            //tbData.AppendText(startAddressHigh.ToString() + "\n");
+                            tbDataSB.Append(startAddressHigh.ToString() + "\n");
 
                             outText.Append("Start Address High: " + startAddressHigh.ToString() + "\n");
                         }
@@ -348,13 +373,24 @@ namespace SerialPortListener
                         }
                         catch
                         {
-                            badData.Text = ("Warning \n");
-                            badData.Font = new Font("Serif", 24, FontStyle.Bold);
-                            badData.AppendText("Comm port speed error \n");
+                            //badData.Text = ("Warning \n");
+                            badDataSB.Append("Warning \n");
+
+                            //badData.Font = new Font("Serif", 24, FontStyle.Bold);
+
+                           // badData.AppendText("Comm port speed error \n");
+                           badDataSB.Append("Comm port speed error \n");
+
                             Thread.Sleep(500);
-                            tbData.AppendText("Comm port speed error \n");
-                            tbDataRx.AppendText("Possible comm speed error \n");
-                            badData.Font = new Font("Serif", 8, FontStyle.Regular);
+
+                            //tbData.AppendText("Comm port speed error \n");
+                            tbDataSB.Append("Comm port speed error \n");
+
+                            //tbDataRx.AppendText("Possible comm speed error \n");
+                            tbDataRXSB.Append("Possible comm speed error \n");
+
+
+                            //badData.Font = new Font("Serif", 8, FontStyle.Regular);
 
                         }
 
@@ -365,8 +401,11 @@ namespace SerialPortListener
                         }
                         else
                         {
-                            tbData.AppendText("Start Addess Low: ");
-                            tbData.AppendText(startAddressLow.ToString() + "\n");
+                            //tbData.AppendText("Start Addess Low: ");
+                            tbDataSB.Append("Start Addess Low: ");
+
+                            //tbData.AppendText(startAddressLow.ToString() + "\n");
+                            tbDataSB.Append(startAddressLow.ToString() + "\n");
 
                             outText.Append("Start Addess Low: " + startAddressLow.ToString() + "\n");
                         }
@@ -389,8 +428,11 @@ namespace SerialPortListener
                         }
                         else
                         {
-                            tbData.AppendText("Number High: ");
-                            tbData.AppendText(numberHigh.ToString() + "\n");
+                            //tbData.AppendText("Number High: ");
+                            tbDataSB.Append("Number High: ");
+
+                            //tbData.AppendText(numberHigh.ToString() + "\n");
+                            tbDataSB.Append(numberHigh.ToString() + "\n");
 
                             outText.Append("Number High: " + numberHigh.ToString() + "\n");
                         }
@@ -408,30 +450,30 @@ namespace SerialPortListener
                         }
                         if (RX)
                         {
-                            // tbDataRx.AppendText("Data Low: ");
-                            // tbDataRx.AppendText(numberLow.ToString() + "\n");
-
-
+                            
                             startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
                             range = (numberHigh * 256) + (numberLow);
                             endAddress = startAddress + range;
 
-                            //tbDataRx.AppendText("\n Start of Data : " + startAddress + "\n");
-                            // tbDataRx.AppendText("\n End of Data : " + endAddress + "\n");
+                            
                         }
                         else
                         {
-                            tbData.AppendText("Number Low: ");
-                            tbData.AppendText(numberLow.ToString() + "\n");
+                            //tbData.AppendText("Number Low: ");
+                            tbDataSB.Append("Number Low: ");
 
+                            //tbData.AppendText(numberLow.ToString() + "\n");
+                            tbDataSB.Append(numberLow.ToString() + "\n");
 
                             startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
                             range = (numberHigh * 256) + (numberLow);
                             endAddress = startAddress + range;
 
-                            tbData.AppendText("Start of Data : " + startAddress + "\n");
-                            tbData.AppendText("End of Data : " + endAddress + "\n");
+                            //tbData.AppendText("Start of Data : " + startAddress + "\n");
+                            tbDataSB.Append("Start of Data : " + startAddress + "\n");
 
+                            //tbData.AppendText("End of Data : " + endAddress + "\n");
+                            tbDataSB.Append("End of Data : " + endAddress + "\n");
 
                             outText.Append("Number Low: " + numberLow.ToString() + "\n");
                             outText.Append("\n Start of Data: " + startAddress + "\n");
@@ -448,13 +490,19 @@ namespace SerialPortListener
                 {
                     if (RX)
                     {
-                        tbDataRx.AppendText("CRC: ");
-                        tbDataRx.AppendText(words[i] + "\n");
+                        //tbDataRx.AppendText("CRC: ");
+                        tbDataRXSB.Append("CRC: ");
+
+                        //tbDataRx.AppendText(words[i] + "\n");
+                        tbDataRXSB.Append(words[i] + "\n");
                     }
                     else
                     {
-                        tbData.AppendText("CRC: ");
-                        tbData.AppendText(words[i] + "\n");
+                        //tbData.AppendText("CRC: ");
+                        tbDataSB.Append("CRC: ");
+
+                        //tbData.AppendText(words[i] + "\n");
+                        tbDataSB.Append(words[i] + "\n");
                     }
                 }
 
@@ -462,13 +510,19 @@ namespace SerialPortListener
                 {
                     if (RX)
                     {
-                        tbDataRx.AppendText("CRC: ");
-                        tbDataRx.AppendText(words[i] + "\n");
+                        //tbDataRx.AppendText("CRC: ");
+                        tbDataRXSB.Append("CRC: ");
+
+                        //tbDataRx.AppendText(words[i] + "\n");
+                        tbDataRXSB.Append(words[i] + "\n");
                     }
                     else
                     {
-                        tbData.AppendText("CRC: ");
-                        tbData.AppendText(words[i] + "\n");
+                      //  tbData.AppendText("CRC: ");
+                      tbDataSB.Append("CRC: ");
+
+                        //tbData.AppendText(words[i] + "\n");
+                        tbDataSB.Append(words[i] + "\n");
                     }
                 }
 
@@ -489,16 +543,20 @@ namespace SerialPortListener
 
                     if (i == 2)
                     {
-                        tbDataRx.AppendText("No. Bytes: ");
-                        tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                        //tbDataRx.AppendText("No. Bytes: ");
+                        tbDataRXSB.Append("No. Bytes: ");
+                        //tbDataRx.AppendText(numberHigh.ToString() + "\n");
+                        tbDataRXSB.Append(numberHigh.ToString() + "\n");
+
                         outText.Append("No. Bytes: ");
                         outText.Append(numberHigh.ToString() + "\n");
                     }
                     else
                     {
-                        tbDataRx.AppendText("Data: ");
-                        tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
-
+                        //tbDataRx.AppendText("Data: ");
+                        tbDataRXSB.Append("Data: ");
+                        //tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+                        tbDataRXSB.Append(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
                     }
 
@@ -511,10 +569,8 @@ namespace SerialPortListener
 
                     if (returnCode == "Read Holding Registers " && RX)
                     {
-                       // Thread thread = new Thread(() => updateHoldingRegister(sb.ToString()));
-                        //thread.Start();
-
-                       // updateHoldingRegister(sb.ToString());
+                       
+                        updateHoldingRegister(sb.ToString());
 
                     }
 
@@ -525,11 +581,8 @@ namespace SerialPortListener
 
             }
 
-            tbData.AppendText("\n");
-            tbData.ScrollToCaret();
-
-            tbDataRx.AppendText("\n");
-            tbDataRx.ScrollToCaret();
+            
+           
 
             if (checkBoxLogging.Checked)
             {
@@ -848,6 +901,7 @@ namespace SerialPortListener
                 if (messageHistory[replayCount].Length > 4)
                 {
                     decodeModbus(messageHistory[replayCount]);
+                    updateGUI();
                     badData.AppendText("\nRX: " + RX.ToString());
                 }
                 else
@@ -883,6 +937,7 @@ namespace SerialPortListener
                 if (messageHistory[replayCount].Length > 4)
                 {
                     decodeModbus(messageHistory[replayCount]);
+                    updateGUI();
                     badData.AppendText("\nRX: " + RX.ToString());
                 }
                 else
