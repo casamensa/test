@@ -40,6 +40,7 @@ namespace SerialPortListener
         int messageHistoryCount;
         int replayCount;
         int coilCount = 1;
+        int holdingRegisterCount = 1;
 
         bool response;
         bool replay = false;
@@ -61,6 +62,9 @@ namespace SerialPortListener
             btnStop.Enabled = false;
             buttonBack.Enabled = false;
             buttonForward.Enabled = false;
+
+           
+
         }
 
 
@@ -78,7 +82,10 @@ namespace SerialPortListener
             _spManager.NewSerialDataRecieved += new EventHandler<SerialDataEventArgs>(_spManager_NewSerialDataRecieved);
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
 
-            baudRateComboBox.SelectedIndex = 11; // doesnt work for some reason
+
+            mySerialSettings.BaudRate = 9600;
+
+           
 
         }
 
@@ -101,8 +108,8 @@ namespace SerialPortListener
 
             sb.Clear();
             outText.Clear();
-            
-            
+
+
 
 
 
@@ -121,7 +128,7 @@ namespace SerialPortListener
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
                 Console.Write("Count: " + messageHistoryCount.ToString() + "\n");
-                Console.Write("Message stored: " + messageHistory[messageHistoryCount].ToString() );
+                Console.Write("Message stored: " + messageHistory[messageHistoryCount].ToString());
                 rxHistory[messageHistoryCount] = RX;
                 messageHistoryCount++;
 
@@ -130,15 +137,15 @@ namespace SerialPortListener
             }
             else
             {
-                for (int i = 0;i< messageHistory.Length;i++)
+                for (int i = 0; i < messageHistory.Length; i++)
                 {
                     messageHistory[i].Clear();
                 }
                 messageHistoryCount = 0;
-                
+
             }
 
-            
+
             if (response && serialCount > 4)
             {
                 decodeModbus(sb);
@@ -153,7 +160,7 @@ namespace SerialPortListener
             }
 
             serialCount++;
-            
+
         }
 
         private void decodeModbus(StringBuilder sb)
@@ -169,6 +176,7 @@ namespace SerialPortListener
             int endAddress = 0;
 
             coilCount = 1;
+            holdingRegisterCount = 1;
 
             string[] words = sb.ToString().Split(' ');
 
@@ -182,7 +190,7 @@ namespace SerialPortListener
                 else
                 {
                     RX = false;
-                    
+
                 }
             }
             else
@@ -227,7 +235,7 @@ namespace SerialPortListener
 
                             if (response)
                             {
-                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" +Environment.NewLine+Environment.NewLine);
+                                tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
@@ -444,9 +452,9 @@ namespace SerialPortListener
                         numberHigh = 999;
                     }
 
-                    string binary = Convert.ToString(numberHigh, 2).PadLeft(8,'0');
+                    string binary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
 
-                    
+
 
                     if (i == 2)
                     {
@@ -460,7 +468,7 @@ namespace SerialPortListener
                         tbDataRx.AppendText("Data: ");
                         tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
 
-                       
+
                     }
 
                     if (returnCode == "Read Coil Status " && RX)
@@ -468,6 +476,14 @@ namespace SerialPortListener
                         numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
                         string coilBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
                         updateCoils(coilBinary);
+                    }
+
+                    if (returnCode == "Read Holding Registers " && RX)
+                    {
+                        numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
+                        //string holdingBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
+                        updateHoldingRegister(numberHigh.ToString());
+
                     }
 
 
@@ -519,9 +535,9 @@ namespace SerialPortListener
                 high = 254;
             }
 
-            for (int i= binary.Length-1;i>=0;i--)
+            for (int i = binary.Length - 1; i >= 0; i--)
             {
-                if (coilCount >= low+8 && coilCount <= high+8)
+                if (coilCount >= low + 8 && coilCount <= high + 8)
                 {
                     int modifiedCount = coilCount - 8;
                     richTextBoxCoils.AppendText(modifiedCount.ToString() + ": " + binary[i] + "\t");
@@ -530,7 +546,49 @@ namespace SerialPortListener
                 coilCount++;
             }
 
-            
+
+        }
+
+        private void updateHoldingRegister(string decimalValue)
+        {
+            if (holdingRegisterCount <= 1)
+            {
+                richTextBoxHoldingRegister.Text = "";
+            }
+            int low;
+            int high;
+
+            try
+            {
+                low = Int32.Parse(textBoxHoldLow.Text);
+            }
+            catch
+            {
+                low = 1;
+            }
+
+            try
+            {
+                high = Int32.Parse(textBoxHoldHigh.Text);
+            }
+
+            catch
+            {
+                high = 254;
+            }
+
+
+
+            if (holdingRegisterCount >= low + 2 && holdingRegisterCount <= high + 2)
+            {
+                int modifiedCount = holdingRegisterCount - 2;
+                richTextBoxHoldingRegister.AppendText(modifiedCount.ToString() + ": " + decimalValue + "\t");
+            }
+            //richTextBoxCoils.AppendText("\n");
+
+            holdingRegisterCount++;
+
+
         }
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
@@ -727,8 +785,8 @@ namespace SerialPortListener
             {
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
-                
-                replayRX = rxHistory[replayCount+1];
+
+                replayRX = rxHistory[replayCount + 1];
 
                 if (messageHistory[replayCount].Length > 4)
                 {
@@ -742,8 +800,8 @@ namespace SerialPortListener
                     tbDataRx.Text = "";
                     replayCount++;
                 }
-                
-                
+
+
             }
             else
             {
@@ -760,10 +818,10 @@ namespace SerialPortListener
 
             if (replayCount <= 149 && replayCount >= 0)
             {
-               
+
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
-                replayRX = rxHistory[replayCount-1];
+                replayRX = rxHistory[replayCount - 1];
 
                 if (messageHistory[replayCount].Length > 4)
                 {
@@ -847,7 +905,7 @@ namespace SerialPortListener
             textBox.Text = newText;
             //set the caret to the end of text
             //textBox.CaretIndex = newText.Length;
-           
+
         }
 
         private void textBoxCoilHigh_TextChanged(object sender, EventArgs e)

@@ -41,9 +41,8 @@
             this.badData = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
-            this.buttonForward = new System.Windows.Forms.Button();
-            this.buttonBack = new System.Windows.Forms.Button();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
@@ -59,13 +58,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxCoilHigh = new System.Windows.Forms.TextBox();
             this.textBoxCoilLow = new System.Windows.Forms.TextBox();
+            this.buttonForward = new System.Windows.Forms.Button();
+            this.buttonBack = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPageHex = new System.Windows.Forms.TabPage();
             this.tabPageCoils = new System.Windows.Forms.TabPage();
             this.richTextBoxCoils = new System.Windows.Forms.RichTextBox();
             this.tabPageHolding = new System.Windows.Forms.TabPage();
             this.richTextBoxHoldingRegister = new System.Windows.Forms.RichTextBox();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
             dataBitsLabel = new System.Windows.Forms.Label();
@@ -73,13 +73,13 @@
             parityLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageSerial.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.tabPageOptions.SuspendLayout();
             this.tabPageRanges.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPageHex.SuspendLayout();
             this.tabPageCoils.SuspendLayout();
             this.tabPageHolding.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // baudRateLabel
@@ -196,7 +196,7 @@
             this.badData.Name = "badData";
             this.badData.ReadOnly = true;
             this.badData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.badData.Size = new System.Drawing.Size(487, 182);
+            this.badData.Size = new System.Drawing.Size(484, 182);
             this.badData.TabIndex = 15;
             // 
             // tabControl1
@@ -230,26 +230,6 @@
             this.tabPageSerial.Text = "Serial Settings";
             this.tabPageSerial.UseVisualStyleBackColor = true;
             // 
-            // buttonForward
-            // 
-            this.buttonForward.Location = new System.Drawing.Point(391, 142);
-            this.buttonForward.Name = "buttonForward";
-            this.buttonForward.Size = new System.Drawing.Size(113, 28);
-            this.buttonForward.TabIndex = 22;
-            this.buttonForward.Text = "Step Forward";
-            this.buttonForward.UseVisualStyleBackColor = true;
-            this.buttonForward.Click += new System.EventHandler(this.buttonForward_Click);
-            // 
-            // buttonBack
-            // 
-            this.buttonBack.Location = new System.Drawing.Point(390, 183);
-            this.buttonBack.Name = "buttonBack";
-            this.buttonBack.Size = new System.Drawing.Size(113, 28);
-            this.buttonBack.TabIndex = 21;
-            this.buttonBack.Text = "Step Back";
-            this.buttonBack.UseVisualStyleBackColor = true;
-            this.buttonBack.Click += new System.EventHandler(this.button1_Click);
-            // 
             // baudRateComboBox
             // 
             this.baudRateComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "BaudRate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -259,6 +239,10 @@
             this.baudRateComboBox.Name = "baudRateComboBox";
             this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
             this.baudRateComboBox.TabIndex = 12;
+            // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
             // 
             // stopBitsComboBox
             // 
@@ -409,6 +393,26 @@
             this.textBoxCoilLow.TabIndex = 0;
             this.textBoxCoilLow.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
+            // buttonForward
+            // 
+            this.buttonForward.Location = new System.Drawing.Point(391, 142);
+            this.buttonForward.Name = "buttonForward";
+            this.buttonForward.Size = new System.Drawing.Size(113, 28);
+            this.buttonForward.TabIndex = 22;
+            this.buttonForward.Text = "Step Forward";
+            this.buttonForward.UseVisualStyleBackColor = true;
+            this.buttonForward.Click += new System.EventHandler(this.buttonForward_Click);
+            // 
+            // buttonBack
+            // 
+            this.buttonBack.Location = new System.Drawing.Point(390, 183);
+            this.buttonBack.Name = "buttonBack";
+            this.buttonBack.Size = new System.Drawing.Size(113, 28);
+            this.buttonBack.TabIndex = 21;
+            this.buttonBack.Text = "Step Back";
+            this.buttonBack.UseVisualStyleBackColor = true;
+            this.buttonBack.Click += new System.EventHandler(this.button1_Click);
+            // 
             // tabControl2
             // 
             this.tabControl2.Controls.Add(this.tabPageHex);
@@ -464,15 +468,11 @@
             // richTextBoxHoldingRegister
             // 
             this.richTextBoxHoldingRegister.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxHoldingRegister.Location = new System.Drawing.Point(-9, -1);
+            this.richTextBoxHoldingRegister.Location = new System.Drawing.Point(0, -1);
             this.richTextBoxHoldingRegister.Name = "richTextBoxHoldingRegister";
-            this.richTextBoxHoldingRegister.Size = new System.Drawing.Size(489, 177);
+            this.richTextBoxHoldingRegister.Size = new System.Drawing.Size(485, 177);
             this.richTextBoxHoldingRegister.TabIndex = 0;
             this.richTextBoxHoldingRegister.Text = "";
-            // 
-            // serialSettingsBindingSource
-            // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
             // 
             // MainForm
             // 
@@ -493,6 +493,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
             this.tabPageRanges.ResumeLayout(false);
@@ -502,7 +503,6 @@
             this.tabPageHex.PerformLayout();
             this.tabPageCoils.ResumeLayout(false);
             this.tabPageHolding.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
