@@ -38,7 +38,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <AssemblyFileVersionSettings>Increment.DateStamp.TimeStamp.None</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>Increment.DateStamp.TimeStamp.None</AssemblyInfoVersionSettings>
-    <AssemblyVersion>206.15316.1032.0</AssemblyVersion>
+    <AssemblyVersion>227.15316.1240.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>

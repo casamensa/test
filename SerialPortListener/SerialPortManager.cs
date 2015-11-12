@@ -100,11 +100,13 @@ namespace SerialPortListener.Serial
                 if (result > 0)
                 {
                     returnRX = true;
+                  
                     
                 }
                 else
                 {
                     returnRX = false;
+                    
                 }
 
                 Console.Write("return:" + returnRX.ToString() + "\n");
