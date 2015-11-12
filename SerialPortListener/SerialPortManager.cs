@@ -44,8 +44,10 @@ namespace SerialPortListener.Serial
         Stopwatch sw = new Stopwatch();
         private long previousTime;
         private int dataLength;
+        private int count;
 
         private bool returnRX;
+        private bool[] rxHistory = new bool[150];
 
         #endregion
 
@@ -62,6 +64,11 @@ namespace SerialPortListener.Serial
         public bool getRX()
         {
             return returnRX;
+        }
+
+        public bool[] getHistory()
+        {
+            return rxHistory;
         }
 
         #endregion
@@ -89,14 +96,29 @@ namespace SerialPortListener.Serial
 
                 //Console.Write("Time:"+sw.ElapsedMilliseconds.ToString()+"\n");
                 Console.Write("Diff:"+result.ToString()+"\n");
+                
                 if (result > 0)
                 {
                     returnRX = true;
+                    
                 }
                 else
                 {
                     returnRX = false;
                 }
+
+                Console.Write("return:" + returnRX.ToString() + "\n");
+
+                if (count < 150)
+                {
+                    rxHistory[count] = returnRX;
+                }
+                else
+                {
+                    count = 0;
+                    rxHistory[count] = returnRX;
+                }
+                count++;
 
 
                 Thread.Sleep(50); // This is required to allow the buffer time to fill

@@ -124,6 +124,7 @@ namespace SerialPortListener
                 if (wordtbData[i].Contains("Master"))
                 {
                     tbData.Text = "";
+                    
                 }
                 tbData.AppendText(wordtbData[i]);
             }
@@ -185,7 +186,9 @@ namespace SerialPortListener
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
 
-                rxHistory[messageHistoryCount] = RX;
+                
+                
+                
                 messageHistoryCount++;
                 
             }
@@ -195,9 +198,10 @@ namespace SerialPortListener
                 for (int i = 0; i < messageHistory.Length; i++)
                 {
                     messageHistory[i].Clear();
+                   
                 }
                 messageHistoryCount = 0;
-                rxHistory[messageHistoryCount] = RX;
+                
             }
 
             
@@ -929,7 +933,7 @@ namespace SerialPortListener
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
 
-                replayRX = rxHistory[replayCount + 1];
+                replayRX = _spManager.getHistory()[replayCount];
 
                 if (messageHistory[replayCount].Length > 4)
                 {
@@ -967,7 +971,8 @@ namespace SerialPortListener
 
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
-                replayRX = rxHistory[replayCount - 1];
+                replayRX = _spManager.getHistory()[replayCount];
+                
 
                 if (messageHistory[replayCount].Length > 4)
                 {
