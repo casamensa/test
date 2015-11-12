@@ -295,7 +295,7 @@ namespace SerialPortListener
                             outText.Append("Bad Data - Check Polarity \n");
                         }
 
-                        else if (_spManager.getRX())
+                        else if (RX)
                         {
 
 
@@ -364,7 +364,7 @@ namespace SerialPortListener
 
 
                         getFunctionCode(words[i]);
-                        if (_spManager.getRX())
+                        if (RX)
                         {
                             //tbDataRx.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             tbDataRXSB.Append(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
@@ -388,7 +388,7 @@ namespace SerialPortListener
                         {
                             numberHigh = 999;
                         }
-                        if (_spManager.getRX())
+                        if (RX)
                         {
 
                         }
@@ -433,7 +433,7 @@ namespace SerialPortListener
 
                         }
 
-                        if (_spManager.getRX())
+                        if (RX)
                         {
                             //tbDataRx.AppendText("Data Low: ");
                             // tbDataRx.AppendText(startAddressLow.ToString() + "\n");
@@ -460,7 +460,7 @@ namespace SerialPortListener
                         {
                             numberHigh = 999;
                         }
-                        if (_spManager.getRX())
+                        if (RX)
                         {
                             //tbDataRx.AppendText("Data High: ");
                             // tbDataRx.AppendText(numberHigh.ToString() + "\n");
@@ -487,7 +487,7 @@ namespace SerialPortListener
                         {
                             numberLow = 999;
                         }
-                        if (_spManager.getRX())
+                        if (RX)
                         {
 
                             startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
@@ -565,7 +565,7 @@ namespace SerialPortListener
                     }
                 }
 
-                if (_spManager.getRX() && i >= 2 && i < words.Length - 3)
+                if (RX && i >= 2 && i < words.Length - 3)
                 {
                     try
                     {
@@ -599,14 +599,14 @@ namespace SerialPortListener
 
                     }
 
-                    if (returnCode == "Read Coil Status " && _spManager.getRX())
+                    if (returnCode == "Read Coil Status " && RX)
                     {
                         numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
                         string coilBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
                         updateCoils(coilBinary);
                     }
 
-                    if (returnCode == "Read Holding Registers " && _spManager.getRX())
+                    if (returnCode == "Read Holding Registers " && RX)
                     {
 
                         updateHoldingRegister(sb.ToString());
