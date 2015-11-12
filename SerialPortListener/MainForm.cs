@@ -21,7 +21,6 @@ namespace SerialPortListener
 
         string returnCode;
         string previousSlaveId = "999";
-        string previousFunctionCode = "999";
         string filename = "c:\\test.log";
 
         StringBuilder previousMessage = new StringBuilder();
@@ -38,7 +37,7 @@ namespace SerialPortListener
 
         StringBuilder[] messageHistory = new StringBuilder[150];
 
-        
+
         Thread holdingThread = new Thread(new ThreadStart(WorkThreadFunction));
 
         bool[] rxHistory = new bool[150];
@@ -73,7 +72,7 @@ namespace SerialPortListener
             buttonBack.Enabled = false;
             buttonForward.Enabled = false;
 
-           
+
 
         }
 
@@ -94,7 +93,7 @@ namespace SerialPortListener
 
 
             mySerialSettings.BaudRate = 9600;
-            
+
         }
 
         public static void WorkThreadFunction()
@@ -117,14 +116,14 @@ namespace SerialPortListener
             string[] wordbadData = badDataSB.ToString().Split(' ');
             string[] wordCoils = coilsText.ToString().Split(' ');
 
-            
 
-            for (int i=0;i<wordtbData.Length;i++)
+
+            for (int i = 0; i < wordtbData.Length; i++)
             {
                 if (wordtbData[i].Contains("Master"))
                 {
                     tbData.Text = "";
-                    
+
                 }
                 tbData.AppendText(wordtbData[i]);
             }
@@ -135,18 +134,19 @@ namespace SerialPortListener
                     tbDataRx.Text = "";
                 }
                 tbDataRx.AppendText(wordtbDataRx[i]);
-           }
+            }
             for (int i = 0; i < wordbadData.Length; i++)
             {
-                badData.AppendText(wordbadData[i] );
+                badData.AppendText(wordbadData[i]);
             }
             for (int i = 0; i < wordCoils.Length; i++)
             {
-               
-                
+
+
                 richTextBoxCoils.AppendText(wordCoils[i]);
             }
-           
+
+            badData.AppendText(RX.ToString());
         }
 
 
@@ -166,10 +166,12 @@ namespace SerialPortListener
                 return;
             }
 
+            RX = _spManager.getRX();
+
             sb.Clear();
             outText.Clear();
             holdingRegisterText.Clear();
-            
+
             badDataSB.Clear();
             richTextBoxCoils.Text = "";
 
@@ -186,25 +188,23 @@ namespace SerialPortListener
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
 
-                
-                
-                
+
                 messageHistoryCount++;
-                
+
             }
             else
             {
-                
+
                 for (int i = 0; i < messageHistory.Length; i++)
                 {
                     messageHistory[i].Clear();
-                   
+
                 }
                 messageHistoryCount = 0;
-                
+
             }
 
-            
+
             if (response && serialCount > 4)
             {
                 //decodeModbus(sb);
@@ -216,11 +216,13 @@ namespace SerialPortListener
             }
             else // CRC check has failed then do this
             {
-               
-              
+
+
                 badDataSB.Append("Error Detected \n");
 
-                decodeModbus(sb);
+                Thread thread = new Thread(() => decodeModbus(sb));
+
+                thread.Start();
                 updateGUI();
             }
 
@@ -250,15 +252,15 @@ namespace SerialPortListener
                 if (_spManager.getRX())
                 {
                     tbDataRXSB.Clear();
-                   
 
-                    RX = true;
+
+                    
                 }
                 else
                 {
-                    RX = false;
+                   
                     tbDataSB.Clear();
-                    
+
                 }
             }
             else
@@ -289,22 +291,22 @@ namespace SerialPortListener
                             tbDataSB.Append("Bad Data - Check Polarity");
                             tbDataRXSB.Append("Bad Data - Check Polarity");
                             badDataSB.Append("Bad Data - Check Polarity");
-                            
+
                             outText.Append("Bad Data - Check Polarity \n");
                         }
 
-                        else if (RX)
+                        else if (_spManager.getRX())
                         {
 
 
                             //tbDataRx.Text = ("Slave Response \n");
                             tbDataRXSB.Append("Slave Response \n");
-                            
+
                             int value = Convert.ToInt32(words[i], 16);
 
                             //tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
                             tbDataRXSB.Append(" Slave Address:" + value.ToString() + "\n");
-                            
+
                             previousSlaveId = " ";
 
                             outText.Append(" Slave Response \n");
@@ -338,7 +340,7 @@ namespace SerialPortListener
 
                             //tbData.AppendText(value.ToString() + "\n");
                             tbDataSB.Append(value.ToString() + "\n");
-                           
+
 
                             outText.Append("Master Request \n");
                             outText.Append(" Slave Address:" + value.ToString() + "\n");
@@ -362,7 +364,7 @@ namespace SerialPortListener
 
 
                         getFunctionCode(words[i]);
-                        if (RX)
+                        if (_spManager.getRX())
                         {
                             //tbDataRx.AppendText(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
                             tbDataRXSB.Append(returnCode + "\n" + Environment.NewLine + Environment.NewLine);
@@ -386,9 +388,9 @@ namespace SerialPortListener
                         {
                             numberHigh = 999;
                         }
-                        if (RX)
+                        if (_spManager.getRX())
                         {
-                            
+
                         }
                         else
                         {
@@ -415,8 +417,8 @@ namespace SerialPortListener
 
                             //badData.Font = new Font("Serif", 24, FontStyle.Bold);
 
-                           // badData.AppendText("Comm port speed error \n");
-                           badDataSB.Append(" Comm port speed error \n");
+                            // badData.AppendText("Comm port speed error \n");
+                            badDataSB.Append(" Comm port speed error \n");
 
                             Thread.Sleep(500);
 
@@ -431,7 +433,7 @@ namespace SerialPortListener
 
                         }
 
-                        if (RX)
+                        if (_spManager.getRX())
                         {
                             //tbDataRx.AppendText("Data Low: ");
                             // tbDataRx.AppendText(startAddressLow.ToString() + "\n");
@@ -458,7 +460,7 @@ namespace SerialPortListener
                         {
                             numberHigh = 999;
                         }
-                        if (RX)
+                        if (_spManager.getRX())
                         {
                             //tbDataRx.AppendText("Data High: ");
                             // tbDataRx.AppendText(numberHigh.ToString() + "\n");
@@ -485,14 +487,14 @@ namespace SerialPortListener
                         {
                             numberLow = 999;
                         }
-                        if (RX)
+                        if (_spManager.getRX())
                         {
-                            
+
                             startAddress = (startAddressHigh * 256) + (startAddressLow + 1);
                             range = (numberHigh * 256) + (numberLow);
                             endAddress = startAddress + range;
 
-                            
+
                         }
                         else
                         {
@@ -525,7 +527,7 @@ namespace SerialPortListener
 
                 if (i == rxCRC1)
                 {
-                    if (RX)
+                    if (_spManager.getRX())
                     {
                         //tbDataRx.AppendText("CRC: ");
                         tbDataRXSB.Append(" CRC:");
@@ -545,7 +547,7 @@ namespace SerialPortListener
 
                 if (i == rxCRC2)
                 {
-                    if (RX)
+                    if (_spManager.getRX())
                     {
                         //tbDataRx.AppendText("CRC: ");
                         tbDataRXSB.Append(" CRC:");
@@ -555,15 +557,15 @@ namespace SerialPortListener
                     }
                     else
                     {
-                      //  tbData.AppendText("CRC: ");
-                      tbDataSB.Append(" CRC:");
+                        //  tbData.AppendText("CRC: ");
+                        tbDataSB.Append(" CRC:");
 
                         //tbData.AppendText(words[i] + "\n");
                         tbDataSB.Append(words[i] + "\n");
                     }
                 }
 
-                if (RX && i >= 2 && i < words.Length - 3)
+                if (_spManager.getRX() && i >= 2 && i < words.Length - 3)
                 {
                     try
                     {
@@ -597,16 +599,16 @@ namespace SerialPortListener
 
                     }
 
-                    if (returnCode == "Read Coil Status " && RX)
+                    if (returnCode == "Read Coil Status " && _spManager.getRX())
                     {
                         numberHigh = Int32.Parse(words[i], System.Globalization.NumberStyles.HexNumber);
                         string coilBinary = Convert.ToString(numberHigh, 2).PadLeft(8, '0');
                         updateCoils(coilBinary);
                     }
 
-                    if (returnCode == "Read Holding Registers " && RX)
+                    if (returnCode == "Read Holding Registers " && _spManager.getRX())
                     {
-                       
+
                         updateHoldingRegister(sb.ToString());
 
                     }
@@ -618,8 +620,8 @@ namespace SerialPortListener
 
             }
 
-            
-           
+
+
 
             if (checkBoxLogging.Checked)
             {
@@ -673,7 +675,7 @@ namespace SerialPortListener
 
         private void updateHoldingRegister(string decimalValue)
         {
-           string test = decimalValue.Replace(" \n", string.Empty);
+            string test = decimalValue.Replace(" \n", string.Empty);
             if (test.Length > 16)
             {
                 test = test.Substring(6, (test.Length - 8));
@@ -709,13 +711,14 @@ namespace SerialPortListener
             //int modifiedCount = holdingRegisterCount - 1;
             //string newString = test.Substring(i, 4);
             int count = 1;
-            for(int i = 0;i<test.Length-1;i=i+4)
+            for (int i = 0; i < test.Length - 1; i = i + 4)
             {
-                try {
+                try
+                {
                     string test2 = Int32.Parse(test.Substring(i, 4), System.Globalization.NumberStyles.HexNumber).ToString();
                     if (i == 0)
                     {
-                        richTextBoxHoldingRegister.Text=(count.ToString()+": "+test2 + "\t");
+                        richTextBoxHoldingRegister.Text = (count.ToString() + ": " + test2 + "\t");
                     }
                     else
                     {
@@ -728,15 +731,15 @@ namespace SerialPortListener
                 }
                 count++;
             }
-            
-            
+
+
             holdingRegisterCount++;
 
 
 
         }
 
-       
+
 
         private void GetCRC(byte[] message, ref byte[] CRC) // Check the CRC, accessed from CheckResponse method
         {
@@ -885,7 +888,7 @@ namespace SerialPortListener
 
             replayCount = messageHistoryCount;
             sb.Clear();
-            previousFunctionCode = "999";
+            
 
             _spManager.StopListening();
         }
@@ -972,7 +975,7 @@ namespace SerialPortListener
                 //tbData.Text = replayCount.ToString();
                 badData.Text = messageHistory[replayCount].ToString();
                 replayRX = _spManager.getHistory()[replayCount];
-                
+
 
                 if (messageHistory[replayCount].Length > 4)
                 {
