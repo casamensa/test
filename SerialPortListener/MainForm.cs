@@ -32,6 +32,8 @@ namespace SerialPortListener
         StringBuilder tbDataSB = new StringBuilder();
         StringBuilder tbDataRXSB = new StringBuilder();
         StringBuilder badDataSB = new StringBuilder();
+        StringBuilder coilsText = new StringBuilder();
+        StringBuilder holdingRegister = new StringBuilder();
 
 
         StringBuilder[] messageHistory = new StringBuilder[150];
@@ -92,9 +94,7 @@ namespace SerialPortListener
 
 
             mySerialSettings.BaudRate = 9600;
-
-           
-
+            
         }
 
         public static void WorkThreadFunction()
@@ -111,9 +111,41 @@ namespace SerialPortListener
 
         private void updateGUI()
         {
-            tbData.Text = tbDataSB.ToString();
-            tbDataRx.Text = tbDataRXSB.ToString();
-            badData.Text = badDataSB.ToString();
+
+            string[] wordtbData = tbDataSB.ToString().Split(' ');
+            string[] wordtbDataRx = tbDataRXSB.ToString().Split(' ');
+            string[] wordbadData = badDataSB.ToString().Split(' ');
+            string[] wordCoils = coilsText.ToString().Split(' ');
+
+            
+
+            for (int i=0;i<wordtbData.Length;i++)
+            {
+                if (wordtbData[i].Contains("Master"))
+                {
+                    tbData.Text = "";
+                }
+                tbData.AppendText(wordtbData[i]);
+            }
+            for (int i = 0; i < wordtbDataRx.Length; i++)
+            {
+                if (wordtbDataRx[i].Contains("Response"))
+                {
+                    tbDataRx.Text = "";
+                }
+                tbDataRx.AppendText(wordtbDataRx[i]);
+           }
+            for (int i = 0; i < wordbadData.Length; i++)
+            {
+                badData.AppendText(wordbadData[i] );
+            }
+            for (int i = 0; i < wordCoils.Length; i++)
+            {
+               
+                
+                richTextBoxCoils.AppendText(wordCoils[i]);
+            }
+           
         }
 
 
@@ -136,18 +168,15 @@ namespace SerialPortListener
             sb.Clear();
             outText.Clear();
             holdingRegisterText.Clear();
-
-            tbDataRXSB.Clear();
-            tbDataSB.Clear();
-            badDataSB.Clear();
             
-            //StringBuilder sb = new StringBuilder(); // Now declared fo full scope
+            badDataSB.Clear();
+            richTextBoxCoils.Text = "";
 
             for (int i = 0; i < e.Data.Length; i++)
                 sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
-            badData.AppendText(sb.ToString());
-
+            //badData.AppendText(sb.ToString());
+            badDataSB.Append(sb.ToString());
 
             response = CheckResponse(e.Data);
 
@@ -155,38 +184,38 @@ namespace SerialPortListener
             {
                 //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
-                
+
                 rxHistory[messageHistoryCount] = RX;
                 messageHistoryCount++;
-
-
-
+                
             }
             else
             {
+                
                 for (int i = 0; i < messageHistory.Length; i++)
                 {
                     messageHistory[i].Clear();
                 }
                 messageHistoryCount = 0;
-
+                rxHistory[messageHistoryCount] = RX;
             }
 
-
+            
             if (response && serialCount > 4)
             {
-                decodeModbus(sb);
+                //decodeModbus(sb);
 
-                //Thread thread = new Thread(() => decodeModbus(sb));
+                Thread thread = new Thread(() => decodeModbus(sb));
 
-                //thread.Start();
+                thread.Start();
                 updateGUI();
             }
             else // CRC check has failed then do this
             {
-                badData.Font = new Font("Serif", 10, FontStyle.Bold);
-                badData.AppendText("Error Detected \n");
-                badData.Font = new Font("Serif", 10, FontStyle.Regular);
+               
+              
+                badDataSB.Append("Error Detected \n");
+
                 decodeModbus(sb);
                 updateGUI();
             }
@@ -216,13 +245,16 @@ namespace SerialPortListener
             {
                 if (_spManager.getRX())
                 {
+                    tbDataRXSB.Clear();
+                   
 
                     RX = true;
                 }
                 else
                 {
                     RX = false;
-
+                    tbDataSB.Clear();
+                    
                 }
             }
             else
@@ -230,7 +262,7 @@ namespace SerialPortListener
                 RX = replayRX;
             }
 
-           
+
 
             rxCRC1 = words.Length - 3;
             rxCRC2 = words.Length - 2;
@@ -263,25 +295,26 @@ namespace SerialPortListener
 
                             //tbDataRx.Text = ("Slave Response \n");
                             tbDataRXSB.Append("Slave Response \n");
+                            
                             int value = Convert.ToInt32(words[i], 16);
 
                             //tbDataRx.AppendText("Slave Address:" + value.ToString() + "\n");
-                            tbDataRXSB.Append("Slave Address:" + value.ToString() + "\n");
+                            tbDataRXSB.Append(" Slave Address:" + value.ToString() + "\n");
                             
                             previousSlaveId = " ";
 
-                            outText.Append("Slave Response \n");
-                            outText.Append("Slave Address:" + value.ToString() + "\n");
+                            outText.Append(" Slave Response \n");
+                            outText.Append(" Slave Address:" + value.ToString() + "\n");
 
                             if (response)
                             {
                                 //tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
-                                tbDataRXSB.Append("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataRXSB.Append(" Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
                                 //tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
-                                tbDataRXSB.Append("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataRXSB.Append(" Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
 
                             }
 
@@ -295,7 +328,7 @@ namespace SerialPortListener
                             previousSlaveId = words[i];
 
                             //tbData.AppendText("Slave Address: ");
-                            tbDataSB.Append("Slave Address: ");
+                            tbDataSB.Append(" Slave Address:");
 
                             int value = Convert.ToInt32(words[i], 16);
 
@@ -304,17 +337,17 @@ namespace SerialPortListener
                            
 
                             outText.Append("Master Request \n");
-                            outText.Append("Slave Address:" + value.ToString() + "\n");
+                            outText.Append(" Slave Address:" + value.ToString() + "\n");
 
                             if (response)
                             {
                                 //tbData.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
-                                tbDataSB.Append("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataSB.Append(" Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
                             else
                             {
                                 //tbData.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
-                                tbDataSB.Append("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
+                                tbDataSB.Append(" Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
 
                         }
@@ -356,12 +389,12 @@ namespace SerialPortListener
                         else
                         {
                             //tbData.AppendText("Start Address High: ");
-                            tbDataSB.Append("Start Address High: ");
+                            tbDataSB.Append(" Start Address High:");
 
                             //tbData.AppendText(startAddressHigh.ToString() + "\n");
                             tbDataSB.Append(startAddressHigh.ToString() + "\n");
 
-                            outText.Append("Start Address High: " + startAddressHigh.ToString() + "\n");
+                            outText.Append(" Start Address High:" + startAddressHigh.ToString() + "\n");
                         }
 
                         break;
@@ -374,20 +407,20 @@ namespace SerialPortListener
                         catch
                         {
                             //badData.Text = ("Warning \n");
-                            badDataSB.Append("Warning \n");
+                            badDataSB.Append(" Warning \n");
 
                             //badData.Font = new Font("Serif", 24, FontStyle.Bold);
 
                            // badData.AppendText("Comm port speed error \n");
-                           badDataSB.Append("Comm port speed error \n");
+                           badDataSB.Append(" Comm port speed error \n");
 
                             Thread.Sleep(500);
 
                             //tbData.AppendText("Comm port speed error \n");
-                            tbDataSB.Append("Comm port speed error \n");
+                            tbDataSB.Append(" Comm port speed error \n");
 
                             //tbDataRx.AppendText("Possible comm speed error \n");
-                            tbDataRXSB.Append("Possible comm speed error \n");
+                            tbDataRXSB.Append(" Possible comm speed error \n");
 
 
                             //badData.Font = new Font("Serif", 8, FontStyle.Regular);
@@ -402,12 +435,12 @@ namespace SerialPortListener
                         else
                         {
                             //tbData.AppendText("Start Addess Low: ");
-                            tbDataSB.Append("Start Addess Low: ");
+                            tbDataSB.Append(" Start Addess Low:");
 
                             //tbData.AppendText(startAddressLow.ToString() + "\n");
                             tbDataSB.Append(startAddressLow.ToString() + "\n");
 
-                            outText.Append("Start Addess Low: " + startAddressLow.ToString() + "\n");
+                            outText.Append(" Start Addess Low:" + startAddressLow.ToString() + "\n");
                         }
 
                         break;
@@ -429,12 +462,12 @@ namespace SerialPortListener
                         else
                         {
                             //tbData.AppendText("Number High: ");
-                            tbDataSB.Append("Number High: ");
+                            tbDataSB.Append(" Number High:");
 
                             //tbData.AppendText(numberHigh.ToString() + "\n");
                             tbDataSB.Append(numberHigh.ToString() + "\n");
 
-                            outText.Append("Number High: " + numberHigh.ToString() + "\n");
+                            outText.Append(" Number High:" + numberHigh.ToString() + "\n");
                         }
 
                         break;
@@ -460,7 +493,7 @@ namespace SerialPortListener
                         else
                         {
                             //tbData.AppendText("Number Low: ");
-                            tbDataSB.Append("Number Low: ");
+                            tbDataSB.Append(" Number Low:");
 
                             //tbData.AppendText(numberLow.ToString() + "\n");
                             tbDataSB.Append(numberLow.ToString() + "\n");
@@ -470,14 +503,14 @@ namespace SerialPortListener
                             endAddress = startAddress + range;
 
                             //tbData.AppendText("Start of Data : " + startAddress + "\n");
-                            tbDataSB.Append("Start of Data : " + startAddress + "\n");
+                            tbDataSB.Append(" Start of Data:" + startAddress + "\n");
 
                             //tbData.AppendText("End of Data : " + endAddress + "\n");
-                            tbDataSB.Append("End of Data : " + endAddress + "\n");
+                            tbDataSB.Append(" End of Data:" + endAddress + "\n");
 
-                            outText.Append("Number Low: " + numberLow.ToString() + "\n");
-                            outText.Append("\n Start of Data: " + startAddress + "\n");
-                            outText.Append("\n End of Data : " + endAddress + "\n");
+                            outText.Append(" Number Low:" + numberLow.ToString() + "\n");
+                            outText.Append(" Start of Data:" + startAddress + "\n");
+                            outText.Append(" End of Data :" + endAddress + "\n");
                         }
                         break;
 
@@ -491,7 +524,7 @@ namespace SerialPortListener
                     if (RX)
                     {
                         //tbDataRx.AppendText("CRC: ");
-                        tbDataRXSB.Append("CRC: ");
+                        tbDataRXSB.Append(" CRC:");
 
                         //tbDataRx.AppendText(words[i] + "\n");
                         tbDataRXSB.Append(words[i] + "\n");
@@ -499,7 +532,7 @@ namespace SerialPortListener
                     else
                     {
                         //tbData.AppendText("CRC: ");
-                        tbDataSB.Append("CRC: ");
+                        tbDataSB.Append(" CRC:");
 
                         //tbData.AppendText(words[i] + "\n");
                         tbDataSB.Append(words[i] + "\n");
@@ -511,7 +544,7 @@ namespace SerialPortListener
                     if (RX)
                     {
                         //tbDataRx.AppendText("CRC: ");
-                        tbDataRXSB.Append("CRC: ");
+                        tbDataRXSB.Append(" CRC:");
 
                         //tbDataRx.AppendText(words[i] + "\n");
                         tbDataRXSB.Append(words[i] + "\n");
@@ -519,7 +552,7 @@ namespace SerialPortListener
                     else
                     {
                       //  tbData.AppendText("CRC: ");
-                      tbDataSB.Append("CRC: ");
+                      tbDataSB.Append(" CRC:");
 
                         //tbData.AppendText(words[i] + "\n");
                         tbDataSB.Append(words[i] + "\n");
@@ -544,19 +577,19 @@ namespace SerialPortListener
                     if (i == 2)
                     {
                         //tbDataRx.AppendText("No. Bytes: ");
-                        tbDataRXSB.Append("No. Bytes: ");
+                        tbDataRXSB.Append(" No.Bytes:");
                         //tbDataRx.AppendText(numberHigh.ToString() + "\n");
                         tbDataRXSB.Append(numberHigh.ToString() + "\n");
 
-                        outText.Append("No. Bytes: ");
+                        outText.Append(" No.Bytes:");
                         outText.Append(numberHigh.ToString() + "\n");
                     }
                     else
                     {
                         //tbDataRx.AppendText("Data: ");
-                        tbDataRXSB.Append("Data: ");
+                        tbDataRXSB.Append(" Data:");
                         //tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
-                        tbDataRXSB.Append(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+                        tbDataRXSB.Append(numberHigh.ToString() + "\tBinary:" + binary + "\n");
 
                     }
 
@@ -575,7 +608,7 @@ namespace SerialPortListener
                     }
 
 
-                    outText.Append("Data: " + numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+                    outText.Append(" Data:" + numberHigh.ToString() + "\tBinary:" + binary + "\n");
 
                 }
 
@@ -596,7 +629,7 @@ namespace SerialPortListener
         {
             if (coilCount <= 1)
             {
-                richTextBoxCoils.Text = "";
+                coilsText.Clear();
             }
             int low;
             int high;
@@ -625,7 +658,7 @@ namespace SerialPortListener
                 if (coilCount >= low + 8 && coilCount <= high + 8)
                 {
                     int modifiedCount = coilCount - 8;
-                    richTextBoxCoils.AppendText(modifiedCount.ToString() + ": " + binary[i] + "\t");
+                    coilsText.Append(modifiedCount.ToString() + ": " + binary[i] + "\t");
                 }
                 //richTextBoxCoils.AppendText("\n");
                 coilCount++;
@@ -919,7 +952,9 @@ namespace SerialPortListener
                 replayCount = 149;
             }
 
-
+            tbDataRXSB.Clear();
+            tbDataSB.Clear();
+            badDataSB.Clear();
         }
 
         private void buttonForward_Click(object sender, EventArgs e)
@@ -938,6 +973,7 @@ namespace SerialPortListener
                 {
                     decodeModbus(messageHistory[replayCount]);
                     updateGUI();
+
                     badData.AppendText("\nRX: " + RX.ToString());
                 }
                 else
@@ -952,7 +988,9 @@ namespace SerialPortListener
             {
                 replayCount = 0;
             }
-
+            tbDataRXSB.Clear();
+            tbDataSB.Clear();
+            badDataSB.Clear();
         }
 
         private void label1_Click(object sender, EventArgs e)

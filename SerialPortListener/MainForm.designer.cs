@@ -42,7 +42,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageSerial = new System.Windows.Forms.TabPage();
             this.baudRateComboBox = new System.Windows.Forms.ComboBox();
-            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
             this.portNameComboBox = new System.Windows.Forms.ComboBox();
             this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
@@ -66,6 +65,7 @@
             this.richTextBoxCoils = new System.Windows.Forms.RichTextBox();
             this.tabPageHolding = new System.Windows.Forms.TabPage();
             this.richTextBoxHoldingRegister = new System.Windows.Forms.RichTextBox();
+            this.serialSettingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             baudRateLabel = new System.Windows.Forms.Label();
             stopBitsLabel = new System.Windows.Forms.Label();
             dataBitsLabel = new System.Windows.Forms.Label();
@@ -73,13 +73,13 @@
             parityLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageSerial.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.tabPageOptions.SuspendLayout();
             this.tabPageRanges.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPageHex.SuspendLayout();
             this.tabPageCoils.SuspendLayout();
             this.tabPageHolding.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // baudRateLabel
@@ -240,10 +240,6 @@
             this.baudRateComboBox.Size = new System.Drawing.Size(160, 24);
             this.baudRateComboBox.TabIndex = 12;
             // 
-            // serialSettingsBindingSource
-            // 
-            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
-            // 
             // stopBitsComboBox
             // 
             this.stopBitsComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.serialSettingsBindingSource, "StopBits", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -353,24 +349,26 @@
             // 
             // textBoxHoldHigh
             // 
-            this.textBoxHoldHigh.Location = new System.Drawing.Point(178, 80);
+            this.textBoxHoldHigh.Location = new System.Drawing.Point(178, 77);
             this.textBoxHoldHigh.Name = "textBoxHoldHigh";
             this.textBoxHoldHigh.Size = new System.Drawing.Size(37, 22);
             this.textBoxHoldHigh.TabIndex = 4;
+            this.textBoxHoldHigh.Text = "10";
             this.textBoxHoldHigh.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBoxHoldLow
             // 
-            this.textBoxHoldLow.Location = new System.Drawing.Point(125, 80);
+            this.textBoxHoldLow.Location = new System.Drawing.Point(125, 77);
             this.textBoxHoldLow.Name = "textBoxHoldLow";
             this.textBoxHoldLow.Size = new System.Drawing.Size(37, 22);
             this.textBoxHoldLow.TabIndex = 3;
+            this.textBoxHoldLow.Text = "1";
             this.textBoxHoldLow.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(17, 23);
+            this.label1.Location = new System.Drawing.Point(17, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 17);
             this.label1.TabIndex = 2;
@@ -379,18 +377,20 @@
             // 
             // textBoxCoilHigh
             // 
-            this.textBoxCoilHigh.Location = new System.Drawing.Point(178, 23);
+            this.textBoxCoilHigh.Location = new System.Drawing.Point(178, 18);
             this.textBoxCoilHigh.Name = "textBoxCoilHigh";
             this.textBoxCoilHigh.Size = new System.Drawing.Size(37, 22);
             this.textBoxCoilHigh.TabIndex = 1;
+            this.textBoxCoilHigh.Text = "12";
             this.textBoxCoilHigh.TextChanged += new System.EventHandler(this.textBoxCoilHigh_TextChanged);
             // 
             // textBoxCoilLow
             // 
-            this.textBoxCoilLow.Location = new System.Drawing.Point(125, 24);
+            this.textBoxCoilLow.Location = new System.Drawing.Point(125, 18);
             this.textBoxCoilLow.Name = "textBoxCoilLow";
             this.textBoxCoilLow.Size = new System.Drawing.Size(37, 22);
             this.textBoxCoilLow.TabIndex = 0;
+            this.textBoxCoilLow.Text = "1";
             this.textBoxCoilLow.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // buttonForward
@@ -474,6 +474,10 @@
             this.richTextBoxHoldingRegister.TabIndex = 0;
             this.richTextBoxHoldingRegister.Text = "";
             // 
+            // serialSettingsBindingSource
+            // 
+            this.serialSettingsBindingSource.DataSource = typeof(SerialPortListener.Serial.SerialSettings);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -493,7 +497,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageSerial.ResumeLayout(false);
             this.tabPageSerial.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
             this.tabPageRanges.ResumeLayout(false);
@@ -503,6 +506,7 @@
             this.tabPageHex.PerformLayout();
             this.tabPageCoils.ResumeLayout(false);
             this.tabPageHolding.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.serialSettingsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

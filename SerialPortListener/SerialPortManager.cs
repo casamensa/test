@@ -84,11 +84,12 @@ namespace SerialPortListener.Serial
                 sw.Stop();
 
                 //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
-                long result = sw.ElapsedTicks - previousTime;
+                long result = sw.ElapsedMilliseconds - previousTime;
                // Console.Write(result + "\n");
 
-                Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
-                if (sw.ElapsedTicks - previousTime > 10000)
+                //Console.Write("Time:"+sw.ElapsedMilliseconds.ToString()+"\n");
+                Console.Write("Diff:"+result.ToString()+"\n");
+                if (result > 0)
                 {
                     returnRX = true;
                 }
@@ -127,7 +128,7 @@ namespace SerialPortListener.Serial
                 if (NewSerialDataRecieved != null)
                     NewSerialDataRecieved(this, new SerialDataEventArgs(data));
 
-                previousTime = sw.ElapsedTicks;
+                previousTime = sw.ElapsedMilliseconds;
                 sw.Reset();
                 sw.Start();
             }
