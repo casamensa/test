@@ -48,7 +48,7 @@ namespace SerialPortListener
         int rxCRC2 = 0;
         int messageHistoryCount=0;
         int replayCount;
-        int coilCount = 1;
+        int coilCount = 0;
         int holdingRegisterCount = 1;
 
         bool response;
@@ -120,7 +120,7 @@ namespace SerialPortListener
 
             for (int i = 0; i < wordtbData.Length; i++)
             {
-                if (wordtbData[i].Contains("Master"))
+                if (wordtbData[i].StartsWith("Master"))
                 {
                     tbData.Text = "";
 
@@ -129,7 +129,7 @@ namespace SerialPortListener
             }
             for (int i = 0; i < wordtbDataRx.Length; i++)
             {
-                if (wordtbDataRx[i].Contains("Response"))
+                if (wordtbDataRx[i].StartsWith("Response"))
                 {
                     tbDataRx.Text = "";
                 }
@@ -141,11 +141,15 @@ namespace SerialPortListener
             }
             for (int i = 0; i < wordCoils.Length; i++)
             {
-
+                if (wordCoils[i].StartsWith("1:"))
+                {
+                    richTextBoxCoils.Text = "";
+                    
+                }
 
                 richTextBoxCoils.AppendText(wordCoils[i]);
             }
-
+            
            
         }
 
@@ -171,8 +175,10 @@ namespace SerialPortListener
             sb.Clear();
             outText.Clear();
             holdingRegisterText.Clear();
+            
 
             badDataSB.Clear();
+            
             richTextBoxCoils.Text = "";
 
             for (int i = 0; i < e.Data.Length; i++)
@@ -242,7 +248,7 @@ namespace SerialPortListener
             int range = 0;
             int endAddress = 0;
 
-            coilCount = 1;
+            coilCount = 0;
             holdingRegisterCount = 1;
 
             string[] words = sb.ToString().Split(' ');
@@ -633,9 +639,9 @@ namespace SerialPortListener
 
         private void updateCoils(string binary)
         {
-            if (coilCount <= 1)
+            if (coilCount == 0)
             {
-                coilsText.Clear();
+               // coilsText.Clear();
             }
             int low;
             int high;
@@ -664,7 +670,12 @@ namespace SerialPortListener
                 if (coilCount >= low + 8 && coilCount <= high + 8)
                 {
                     int modifiedCount = coilCount - 8;
-                    coilsText.Append(modifiedCount.ToString() + ": " + binary[i] + "\t");
+                    //coilsText.Append("coilcnt:"+coilCount.ToString()+"\n");
+                    if (i == binary.Length)
+                    
+                    
+                        coilsText.Append(modifiedCount.ToString() + ": " + binary[i] + "\t");
+                    
                 }
                 //richTextBoxCoils.AppendText("\n");
                 coilCount++;
