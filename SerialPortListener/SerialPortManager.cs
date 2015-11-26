@@ -82,31 +82,20 @@ namespace SerialPortListener.Serial
                 UpdateBaudRateCollection();
         }
 
-        
-        void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        public void Timing(long result)
         {
             try
             {
+                Console.Write("Diff:" + result.ToString() + "\n");
 
-                sw.Stop();
-
-                //Console.Write(sw.ElapsedMilliseconds.ToString()+"\n");
-                long result = sw.ElapsedMilliseconds - previousTime;
-               // Console.Write(result + "\n");
-
-                //Console.Write("Time:"+sw.ElapsedMilliseconds.ToString()+"\n");
-                Console.Write("Diff:"+result.ToString()+"\n");
-                
-                if (result > 0)
+                if (result > 1)
                 {
                     returnRX = true;
-                  
-                    
                 }
+
                 else
                 {
                     returnRX = false;
-                    
                 }
 
                 Console.Write("return:" + returnRX.ToString() + "\n");
@@ -115,15 +104,14 @@ namespace SerialPortListener.Serial
                 {
                     rxHistory[count] = returnRX;
                 }
+
                 else
                 {
                     count = 0;
                     rxHistory[count] = returnRX;
                 }
+
                 count++;
-
-
-                Thread.Sleep(50); // This is required to allow the buffer time to fill
 
                 try
                 {
@@ -133,21 +121,35 @@ namespace SerialPortListener.Serial
                 catch
                 {
                     dataLength = 0;
-
-
                 }
+            }
+            catch (Exception ex)
+            {
+                // log errors
+            }
+        }
 
+        void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+
+                sw.Stop();
+                Thread.Sleep(18); // This is required to allow the buffer time to fill
+                
+                long result = sw.ElapsedMilliseconds - previousTime;
+
+                Thread thread = new Thread(() => Timing(result));
+                thread.Start();
+                
                 byte[] data = new byte[dataLength];
-
-
-
-
+                
                 int nbrDataRead = _serialPort.Read(data, 0, dataLength);
 
-
                 if (nbrDataRead == 0)
+                {
                     return;
-
+                }
                 // Send data to whom ever interested
                 if (NewSerialDataRecieved != null)
                     NewSerialDataRecieved(this, new SerialDataEventArgs(data));
@@ -184,9 +186,7 @@ namespace SerialPortListener.Serial
                 _currentSerialSettings.Parity,
                 _currentSerialSettings.DataBits,
                 _currentSerialSettings.StopBits);
-
             
-
             // Subscribe to event and open serial port for data
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(_serialPort_DataReceived);
            
@@ -202,10 +202,7 @@ namespace SerialPortListener.Serial
             {
                 _serialPort.Close();
             }
-
-
-           
-           
+            
         }
 
 

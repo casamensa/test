@@ -27,26 +27,21 @@ namespace SerialPortListener
         StringBuilder sb = new StringBuilder();
         StringBuilder outText = new StringBuilder();
         StringBuilder holdingRegisterText = new StringBuilder();
-
         StringBuilder tbDataSB = new StringBuilder();
         StringBuilder tbDataRXSB = new StringBuilder();
         StringBuilder badDataSB = new StringBuilder();
         StringBuilder coilsText = new StringBuilder();
         StringBuilder holdingRegister = new StringBuilder();
-
-
         StringBuilder[] messageHistory = new StringBuilder[150];
-
 
         Thread holdingThread = new Thread(new ThreadStart(WorkThreadFunction));
 
         bool[] rxHistory = new bool[150];
 
-
         int serialCount = 0;
         int rxCRC1 = 0;
         int rxCRC2 = 0;
-        int messageHistoryCount=0;
+        int messageHistoryCount = 0;
         int replayCount;
         int coilCount = 0;
         int holdingRegisterCount = 1;
@@ -64,16 +59,12 @@ namespace SerialPortListener
                 messageHistory[i] = new StringBuilder();
 
             UserInitialization();
-
-
-
+            
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             buttonBack.Enabled = false;
             buttonForward.Enabled = false;
-
-
-
+            
         }
 
 
@@ -90,8 +81,7 @@ namespace SerialPortListener
 
             _spManager.NewSerialDataRecieved += new EventHandler<SerialDataEventArgs>(_spManager_NewSerialDataRecieved);
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
-
-
+            
             mySerialSettings.BaudRate = 9600;
 
         }
@@ -115,9 +105,7 @@ namespace SerialPortListener
             string[] wordtbDataRx = tbDataRXSB.ToString().Split(' ');
             string[] wordbadData = badDataSB.ToString().Split(' ');
             string[] wordCoils = coilsText.ToString().Split(' ');
-
-
-
+            
             for (int i = 0; i < wordtbData.Length; i++)
             {
                 if (wordtbData[i].StartsWith("Master"))
@@ -125,32 +113,37 @@ namespace SerialPortListener
                     tbData.Text = "";
 
                 }
+
                 tbData.AppendText(wordtbData[i]);
             }
+
             for (int i = 0; i < wordtbDataRx.Length; i++)
             {
                 if (wordtbDataRx[i].StartsWith("Response"))
                 {
                     tbDataRx.Text = "";
                 }
+
                 tbDataRx.AppendText(wordtbDataRx[i]);
             }
+
             for (int i = 0; i < wordbadData.Length; i++)
             {
                 badData.AppendText(wordbadData[i]);
             }
+
             for (int i = 0; i < wordCoils.Length; i++)
             {
                 if (wordCoils[i].StartsWith("1:"))
                 {
                     richTextBoxCoils.Text = "";
-                    
+
                 }
 
                 richTextBoxCoils.AppendText(wordCoils[i]);
             }
-            
-           
+
+
         }
 
 
@@ -161,74 +154,61 @@ namespace SerialPortListener
 
         void _spManager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
         {
-
-
+            
             if (this.InvokeRequired)
             {
                 // Using this.Invoke causes deadlock when closing serial port, and BeginInvoke is good practice anyway.
                 this.BeginInvoke(new EventHandler<SerialDataEventArgs>(_spManager_NewSerialDataRecieved), new object[] { sender, e });
                 return;
             }
-
-           
-
+            
             sb.Clear();
             outText.Clear();
             holdingRegisterText.Clear();
-            
-
             badDataSB.Clear();
-            
             richTextBoxCoils.Text = "";
 
             for (int i = 0; i < e.Data.Length; i++)
                 sb.AppendFormat("{0:X2} \n", e.Data[i]);
 
-            //badData.AppendText(sb.ToString());
             badDataSB.Append(sb.ToString());
-
-            response = CheckResponse(e.Data);
+             response = CheckResponse(e.Data);
 
             if (messageHistoryCount < 150)
             {
-                //badData.AppendText("stored: " + sb.ToString());
                 messageHistory[messageHistoryCount].Append(sb.ToString());
                 RX = _spManager.getHistory()[messageHistoryCount];
-
                 messageHistoryCount++;
-
             }
+
             else
             {
-
                 for (int i = 0; i < messageHistory.Length; i++)
                 {
                     messageHistory[i].Clear();
 
                 }
+
                 messageHistoryCount = 0;
 
             }
-
-
+            
             if (response && serialCount > 4)
             {
                 //decodeModbus(sb);
-
                 Thread thread = new Thread(() => decodeModbus(sb));
 
                 thread.Start();
                 updateGUI();
             }
+
             else // CRC check has failed then do this
             {
-
-
+                
                 badDataSB.Append("Error Detected \n");
-
                 Thread thread = new Thread(() => decodeModbus(sb));
-
                 thread.Start();
+                
                 updateGUI();
             }
 
@@ -239,7 +219,7 @@ namespace SerialPortListener
         private void decodeModbus(StringBuilder sb)
         {
 
-           
+
             int startAddressHigh = 0;
             int startAddressLow = 0;
             int numberHigh = 0;
@@ -258,24 +238,20 @@ namespace SerialPortListener
                 if (_spManager.getRX())
                 {
                     tbDataRXSB.Clear();
-
-
                     
                 }
+
                 else
                 {
-                   
                     tbDataSB.Clear();
-
                 }
             }
+
             else
             {
                 RX = replayRX;
             }
-
-
-
+            
             rxCRC1 = words.Length - 3;
             rxCRC2 = words.Length - 2;
 
@@ -284,10 +260,7 @@ namespace SerialPortListener
 
                 switch (i) // Decode dependant on which part of the message is being decoded
                 {
-
                     case 0:
-
-
                         if (Convert.ToInt32(words[i], 16) == 136)
                         {
                             // tbData.Text = ("Bad Data - Check Polarity");
@@ -303,8 +276,6 @@ namespace SerialPortListener
 
                         else if (RX)
                         {
-
-
                             //tbDataRx.Text = ("Slave Response \n");
                             tbDataRXSB.Append("Slave Response \n");
 
@@ -323,6 +294,7 @@ namespace SerialPortListener
                                 //tbDataRx.AppendText("Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                                 tbDataRXSB.Append(" Calculated CRC: Checksum Valid" + "\n" + Environment.NewLine + Environment.NewLine);
                             }
+
                             else
                             {
                                 //tbDataRx.AppendText("Calculated CRC: Error in Checksum" + "\n" + Environment.NewLine + Environment.NewLine);
@@ -331,6 +303,7 @@ namespace SerialPortListener
                             }
 
                         }
+                        
                         else
                         {
 
@@ -601,6 +574,7 @@ namespace SerialPortListener
                         //tbDataRx.AppendText("Data: ");
                         tbDataRXSB.Append(" Data:");
                         //tbDataRx.AppendText(numberHigh.ToString() + "\t  Binary: " + binary + "\n");
+                       
                         tbDataRXSB.Append(numberHigh.ToString() + "\tBinary:" + binary + "\n");
 
                     }
@@ -641,7 +615,7 @@ namespace SerialPortListener
         {
             if (coilCount == 0)
             {
-               // coilsText.Clear();
+                // coilsText.Clear();
             }
             int low;
             int high;
@@ -670,13 +644,12 @@ namespace SerialPortListener
                 if (coilCount >= low + 8 && coilCount <= high + 8)
                 {
                     int modifiedCount = coilCount - 8;
-                    //coilsText.Append("coilcnt:"+coilCount.ToString()+"\n");
-                    if (i == binary.Length)
-                    
-                    
-                        coilsText.Append(modifiedCount.ToString() + ": " + binary[i] + "\t");
-                    
+                    // coilsText.Append("coilcnt:"+coilCount.ToString()+"\n");
+
+
+                    coilsText.Append(modifiedCount.ToString() + ": " + binary[i] + "\t");
                 }
+                
                 //richTextBoxCoils.AppendText("\n");
                 coilCount++;
             }
@@ -890,6 +863,7 @@ namespace SerialPortListener
         // Handles the "Stop Listening"-buttom click event
         private void btnStop_Click(object sender, EventArgs e)
         {
+            _spManager.StopListening();
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             buttonBack.Enabled = true;
@@ -899,9 +873,7 @@ namespace SerialPortListener
 
             replayCount = messageHistoryCount;
             sb.Clear();
-            
-
-            _spManager.StopListening();
+     
         }
 
         private void portNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
